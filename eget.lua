@@ -46,7 +46,7 @@ local outdated = false
 
 local versions = download(repoURL.."/versions")
 if fs.exists("/eget/libs/json.lua") == false then
-    writeAbs("/eget/libs/json.lua",     download(repoURL.."/json.lua"))
+    writeAbs("/eget/libs/json.lua",     download(repoURL.."/libs/json.lua"))
 end
 local json = require "/eget/libs/json"
 if versions~=nil then 
