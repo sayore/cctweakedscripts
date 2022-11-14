@@ -63,7 +63,7 @@ else
     outdated=false
 end
 
-if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exists("/eget/libs/eget.lib.lua") == false then
+if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exists("/eget/libs/egetlib.lua") == false then
     --term.clear()
     if any(args,"-fa") == false then
         if outdated then
@@ -73,7 +73,7 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
         end
     end
 
-    writeAbs("/eget/libs/eget.lib.lua", download(repoURL.."/libs/eget.lib.lua"))
+    writeAbs("/eget/libs/egetlib.lua", download(repoURL.."/libs/egetlib.lua"))
     writeAbs("/eget/eget.lua",          download(repoURL.."/eget.lua"))
     writeAbs("/eget.lua",               download(repoURL.."/eget.lua"))
 
@@ -85,7 +85,7 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
     end
 end
 
-local egetLib = require "/eget/libs/eget.lib"
+local egetLib = require "/eget/libs/egetlib"
 
 if args[1] =="help" then
     print("The following arguments can be passed")
