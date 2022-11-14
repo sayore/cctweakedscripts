@@ -4,6 +4,7 @@ local args = {...}
 local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
 
 function download(url) 
+    print("Downloading.. \n"..url)
     local myURL = url
     http.request(myURL)
     local event, url, handle
@@ -24,11 +25,12 @@ function download(url)
 end
 
 function writeAbs(filepath, handle)
-    local eget = handle.readAll()
+    print("Trying to get "..filepath)
+    local filedata = handle.readAll()
     handle.close()
 
     local file = fs.open(filepath, "w")
-    file.write(eget)
+    file.write(filedata)
     file.close()
 end
 
