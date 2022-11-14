@@ -85,7 +85,7 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
     end
 end
 
-local egetLib = require "/eget/libs/eget.lib.lua"
+local egetLib = require "/eget/libs/eget.lib"
 
 if args[1] =="help" then
     print("The following arguments can be passed")
