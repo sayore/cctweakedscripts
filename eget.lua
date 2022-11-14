@@ -86,6 +86,8 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
     end
 end
 
+local egetLib = require "/eget/libs/eget.lib.lua"
+
 if args[1] =="help" then
     print("The following arguments can be passed")
     print("")
@@ -102,8 +104,7 @@ if args[1] =="-i" or args[1]=="install" and args[2]=="eget" then
 end
 
 if args[1] =="-i" or args[1]=="install" then
-    local path = "/apps/"..args[2].."/"..args[2]
-    writeAbs(path..".lua",               download(repoURL.."/"..path..".lua"))
+    egetLib.install(repoURL,args[2])
 end
 
 if args[1] =="-r" or args[1]=="remove"  then
