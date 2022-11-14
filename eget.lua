@@ -1,5 +1,7 @@
 --# wget run http://princess-sayore.ddns.net/eget.lua
+--# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
 local args = {...}
+local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
 
 function download(url) 
     local myURL = url
@@ -40,9 +42,9 @@ end
 local version = "0.0.11"
 local outdated = false
 
-local versions = download("http://princess-sayore.ddns.net/versions")
+local versions = download(repoURL.."/versions")
 if fs.exists("/eget/libs/json.lua") == false then
-    writeAbs("/eget/libs/json.lua",     download("http://princess-sayore.ddns.net/libs/json.lua"))
+    writeAbs("/eget/libs/json.lua",     download(repoURL.."/json.lua"))
 end
 local json = require "/eget/libs/json"
 if versions~=nil then 
@@ -65,9 +67,9 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
         end
     end
 
-    writeAbs("/eget/libs/eget.lib.lua", download("http://princess-sayore.ddns.net/libs/eget.lib.lua"))
-    writeAbs("/eget/eget.lua",          download("http://princess-sayore.ddns.net/eget.lua"))
-    writeAbs("/eget.lua",               download("http://princess-sayore.ddns.net/eget.lua"))
+    writeAbs("/eget/libs/eget.lib.lua", download(repoURL.."/libs/eget.lib.lua"))
+    writeAbs("/eget/eget.lua",          download(repoURL.."/eget.lua"))
+    writeAbs("/eget.lua",               download(repoURL.."/eget.lua"))
 
     if any(args,"-fa") == false then
         print(".. finished!")
@@ -89,12 +91,12 @@ end
 
 if args[1] =="-i" or args[1]=="install" and args[2]=="eget" then
     local path = "/apps/"..args[2].."/"..args[2]
-    writeAbs(path..".lua",               download("http://princess-sayore.ddns.net/"..path..".lua"))
+    writeAbs(path..".lua",               download(repoURL.."/"..path..".lua"))
 end
 
 if args[1] =="-i" or args[1]=="install" then
     local path = "/apps/"..args[2].."/"..args[2]
-    writeAbs(path..".lua",               download("http://princess-sayore.ddns.net/"..path..".lua"))
+    writeAbs(path..".lua",               download(repoURL.."/"..path..".lua"))
 end
 
 if args[1] =="-r" or args[1]=="remove"  then
