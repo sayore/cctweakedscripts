@@ -175,9 +175,20 @@ if args[1]=="live" then
         end
     end
 
+    function strjoin(delimiter, list)
+        local len = getn(list)
+        if len == 0 then
+           return "" 
+        end
+        local string = list[1]
+        for i = 2, len do 
+           string = string .. delimiter .. list[i] 
+        end
+        return string
+     end
 
     function runLive()
-        local id = shell.run("/"..livepath)
+        local id = shell.run("/"..livepath, table.concat(args," "))
         --multishell.setTitle(id, "LIVE")
         --multishell.setFocus(id)
         coroutine_state ="script_exit"
