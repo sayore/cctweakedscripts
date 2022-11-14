@@ -9,16 +9,18 @@ const wss = new WebSocketServer.Server({ port: 8081 })
 
 
 // Creating connection using websocket
-wss.on("connection", ws => {
-    console.log("new client connected");
-    async function choki(){
-        chokidar.watch('./apps').on('change', (path) => {
+wss.on("connection", (ws,req) => {
+    async function choki(appname){
+        chokidar.watch('./apps/'+appname).on('change', (path) => {
             console.log(path);
             ws.send(JSON.stringify({type:"update",path}))
             console.log("update");
         });
     }
-    choki();
+    if(req.headers.app==null) ws.close();
+    if(req.headers.app!=null)
+    choki(req.headers.app);
+    console.log("Client asks for watcher on app "+req.headers.app);
     ws.send(JSON.stringify({type:"keepalive",msg:"Hello!"}))
     // sending message
     ws.on("message", data => {

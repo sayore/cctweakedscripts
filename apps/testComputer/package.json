@@ -1,6 +1,5 @@
 {
-    "dependencies": {
-      "testLib" : "latest"
-    }
+  "dependencies": {
+    "testLib": "latest"
   }
-  
+}

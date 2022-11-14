@@ -1,10 +1,12 @@
 --# wget run http://princess-sayore.ddns.net/eget.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
+--local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
 local args = {...}
-local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
+local repoURL = "http://princess-sayore.ddns.net"
+
+term.clear()
 
 function download(url) 
-    print("Downloading.. \n"..url)
     local myURL = url
     http.request(myURL)
     local event, url, handle
@@ -15,7 +17,7 @@ function download(url)
             handle = ev[3]
         end
         if ev[1] == "http_failure" then
-            print("File could not be found -- exiting")
+            --print("File could not be found -- exiting")
             return
         end
 
@@ -25,7 +27,7 @@ function download(url)
 end 
 
 function writeAbs(filepath, handle)
-    print("Trying to get "..filepath)
+    --print("Trying to get "..filepath)
     local filedata = handle.readAll()
     handle.close()
 
@@ -34,9 +36,9 @@ function writeAbs(filepath, handle)
     file.close()
 end
 
-function any(array, value)
+function any(array, search)
     for key, value in pairs(array) do
-        if(value==value) then return true end
+        if(value==search) then return true end
     end
     return false
 end
@@ -55,25 +57,39 @@ if vJSON["eget"] ~= version then
     outdated=true
 else
     term.setTextColor(colors.lime)
-    print("eGet is on latest Version. [Use -fa to force an update]")
+    if any(args,"-fa") == false then
+        print("eGet is on latest Version.\n [Use -fa to force an update]")
+    end
     term.setTextColor(colors.white)
 end
 else
     print("Could not fetch versions from repo.")
     outdated=false
 end
-
-if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exists("/eget/libs/egetlib.lua") == false then
+function dump(o)
+    if type(o) == 'table' then
+        local s = '{ '
+        for k, v in pairs(o) do
+            if type(k) ~= 'number' then k = '"' .. k .. '"' end
+            s = s .. '[' .. k .. '] = ' .. dump(v) .. ','
+        end
+        return s .. '} '
+    else
+        return tostring(o)
+    end
+end
+if outdated==true or any(args,"-fa") == true or fs.exists("/eget/eget.lua") == false or fs.exists("/eget/libs/egetlib.lua") == false then
     --term.clear()
-    if any(args,"-fa") == false then
+    if any(args,"-fa") == true then
         if outdated then
-            print("EGET Outdated! Updating..")
+            print("Updating ..")
         else
-            print("EGET will be installed..")
+            print("Forcing update ..")
         end
     end
 
     writeAbs("/eget/libs/egetlib.lua", download(repoURL.."/libs/egetlib.lua"))
+    writeAbs("/eget/libs/helper.lua",          download(repoURL.."/libs/helper.lua"))
     writeAbs("/eget/eget.lua",          download(repoURL.."/eget.lua"))
     writeAbs("/eget.lua",               download(repoURL.."/eget.lua"))
 
@@ -81,7 +97,7 @@ if outdated or any(args,"-fa") or fs.exists("/eget/eget.lua") == false or fs.exi
         print(".. finished!")
         print("eGet v"..version.." alive and well!")
     else
-        print("(silent update)")
+        print("Done\n")
     end
 end
 
@@ -106,10 +122,10 @@ if args[1] =="-i" or args[1]=="install" then
     egetLib.install(repoURL,args[2])
 end
 
-if args[1] =="-r" or args[1]=="remove"  then
+if args[1] =="-r" or args[1]=="run"  then
     local path = "/apps/"..args[2].."/"..args[2]
-    print("Trying to run "..path..".lua")
-    os.run({},path..".lua");
+    print("Trying to run "..path..".lua\n")
+    shell.run(path..".lua");
 end
 
 if args[1] =="-u" or args[1]=="uninstall"  then
@@ -127,7 +143,7 @@ if args[1]=="live" then
     local livepath = "apps/"..args[2].."/"..args[2]..".lua"
     local livews
     function liveRoutineUntil()
-        http.websocketAsync("ws://princess-sayore.ddns.net:8081")
+        http.websocketAsync("ws://princess-sayore.ddns.net:8081", {app=args[2]})
 
         while true do
             local ev = {os.pullEvent()}
@@ -161,10 +177,6 @@ if args[1]=="live" then
 
 
     function runLive()
-        local r = require "cc.require"
-        print("require")
-        print(require)
-
         local id = shell.run("/"..livepath)
         --multishell.setTitle(id, "LIVE")
         --multishell.setFocus(id)

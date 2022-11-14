@@ -1,11 +1,7 @@
 local json = require("/eget/libs/json")
-local json = require("/apps/testLib/testLib")
+local testLib = require("/apps/testLib/testLib")
 
-print("nice3")
+print("Im a Test Program with a test dependency downloaded by eget!")
 
+print("The test dependency gives ma a function that can tell you that it has been imported!");
 print(testLib.someFunction())
-print("nice3")
-print("nice3")
-print("nice3")
-print("nice3")
-print("nice3")

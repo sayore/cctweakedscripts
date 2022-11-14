@@ -1,17 +1,17 @@
 local json = require "/eget/libs/json"
+local helper = require "/eget/libs/helper"
 
-function download(url) 
+function download(url, loud)
     local myURL = url
     http.request(myURL)
     local event, url, handle
     repeat
-        local ev = {os.pullEvent()}
-        if ev[1]=="http_success" then
+        local ev = { os.pullEvent() }
+        if ev[1] == "http_success" then
             url = ev[2]
             handle = ev[3]
         end
         if ev[1] == "http_failure" then
-            print("File could not be found -- exiting")
             return false
         end
 
@@ -20,10 +20,9 @@ function download(url)
     return handle
 end
 
-function writeAbs(filepath, handle)
-    print("Trying to get "..filepath)
+function writeAbs(filepath, handle, loud)
     -- In case we don't get data back return false!
-    if(handle==false) then return false end
+    if (handle == false) then return false end
     local filedata = handle.readAll()
     handle.close()
 
@@ -35,18 +34,78 @@ function writeAbs(filepath, handle)
 end
 
 function checkVersion()
-    
+
 end
 
-function install(appName)
-    local path = "/apps/"..args[2].."/"..args[2]
-    writeAbs(path..".lua",               download(repoURL.."/"..path..".lua"))
-    if writeAbs(path..".json",               download(repoURL.."/package.json"))~=nil then
-        local file = fs.open(path..".json", "w")
-        json.decode(file.readAll())
-        file.close()
+function checkIsInstalled(appName)
+    return fs.exists("/apps/" .. appName .. "/" .. appName)
+end
 
-        print(" Dependencies: "..json['dependencies'])
+function printWithFormat(...)
+    local s = "&1"
+    for k, v in ipairs(arg) do
+        s = s .. v
+    end
+    s = s .. "&0"
+
+    local fields = {}
+    local lastcolor, lastpos = "0", 0
+    for pos, clr in s:gmatch "()&(%x)" do
+        table.insert(fields, { s:sub(lastpos + 2, pos - 1), lastcolor })
+        lastcolor, lastpos = clr, pos
+    end
+
+    for i = 2, #fields do
+        term.setTextColor(2 ^ (tonumber(fields[i][2], 16)))
+        io.write(fields[i][1])
+    end
+end
+
+function printlnWithFormat(...)
+    printWithFormat(...)
+    print(" ")
+end
+
+function install(repoURL, appName, depth, depthN)
+    if depthN == nil then depthN = 0 end
+    if depth == nil then
+        printlnWithFormat("Installing " .. appName)
+        depth = "&7-"
+    else
+        printlnWithFormat(depth .. " Installing " .. appName)
+    end
+
+    depth = string.rep("&8|",depthN) .. depth
+
+    local pathToAppDir = "/apps/" .. appName .. "/"
+    writeAbs(pathToAppDir .. appName .. ".lua", download(repoURL .. "/" .. pathToAppDir .. appName .. ".lua"))
+    local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. "/" .. pathToAppDir .. "package.json"))
+
+    if success ~= false and fs.exists(pathToAppDir .. "package.json") == true then
+        local file = fs.open(pathToAppDir .. ".json", "r")
+        local fileContent = file.readAll()
+        --print(fileContent)
+
+        local jsonResult = json.decode(fileContent)
+
+        if (jsonResult['dependencies'] ~= nil) then
+            for key, value in pairs(jsonResult['dependencies']) do
+                if checkIsInstalled(key) then
+                    printlnWithFormat(depth .. colors.green .. " Package depends on " .. key .. "..")
+                    printlnWithFormat(depth .. "&5 is installed!")
+                else
+                    printlnWithFormat(depth .. " Package depends on " .. key .. " ..")
+                    install(repoURL, key, depth, depthN + 1)
+                    --print(depth .." has been installed!")
+                end
+            end
+        end
+    end
+
+    if (depthN==0) then
+        printlnWithFormat("&5has been installed!")
+    else
+        printlnWithFormat(depth .. " &5has been installed!")
     end
 end
 
@@ -54,4 +113,4 @@ function installLib()
 
 end
 
-return {install = install}
+return { install = install }
