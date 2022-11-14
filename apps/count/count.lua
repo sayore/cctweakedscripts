@@ -1,4 +1,5 @@
 -- eget live count --from=back --to=front
+local helper = require "/apps/helperLib/helperLib"
 local args = { ... }
 local fromSide = "back"
 local toSide = "right"
@@ -26,6 +27,7 @@ local monitor = peripheral.wrap("top")
 term.redirect(monitor)
 monitor.setTextScale(0.5)
 local movedTable = {}
+local movedSinceStartTable = {}
 if fs.exists("state.count.db") then
     local file = fs.open("state.count.db", "r")
     movedTable = textutils.unserialize(file.readAll())
@@ -119,11 +121,17 @@ while true do
                 local itemName = itemdetail["displayName"]
                 local pushed = from.pushItems(toSide, i, 64)
                 movedTable[itemName] = pushed
+                movedSinceStartTable[itemName] = pushed
                 movedTableLastUpdate[itemName] = pushed
+                
             else
                 local itemName = itemdetail["displayName"]
                 local pushed = from.pushItems(toSide, i, 64)
                 movedTable[itemName] = movedTable[itemName] + pushed
+                table.
+                if movedSinceStartTable[key]~=nil then
+                    movedSinceStartTable[itemName] = movedSinceStartTable[itemName] + pushed
+                end
                 movedTableLastUpdate[itemName] = pushed
             end
 
@@ -136,33 +144,36 @@ while true do
 
     
     local entry = 0
-    for key, value in pairsByKeys(movedTable) do
-        local perSecond = value / (now - start)
-        local moreThanBefore = ""
-        if movedTableLastUpdate[key] ~= nil and movedTableLastUpdate[key] ~= 0 then
-            moreThanBefore = " (+ " .. movedTableLastUpdate[key] .. " Pcs)"
+    for itemName, amountMovedEver in pairsByKeys(movedTable) do
+        local perSecond = 0
+        if movedSinceStartTable[itemName]~=nil then
+            perSecond = movedSinceStartTable[itemName] / (now - start)
         end
-        movedTableLastUpdate[key] = 0
+        local moreThanBefore = ""
+        if movedTableLastUpdate[itemName] ~= nil and movedTableLastUpdate[itemName] ~= 0 then
+            moreThanBefore = " (+ " .. movedTableLastUpdate[itemName] .. " Pcs)"
+        end
+        movedTableLastUpdate[itemName] = 0
         local isSpecial = "&7"
         for k2, v2 in pairs(specialWords) do
-            if string.find(key, k2) then
+            if string.find(itemName, k2) then
                 isSpecial = v2
             end
         end
-        if specialItems[key] ~= nil then
-            isSpecial = specialItems[key]
+        if specialItems[itemName] ~= nil then
+            isSpecial = specialItems[itemName]
         end
         printWithFormat(isSpecial ..
-            padLeft(key, max_ln, " ") ..
+            padLeft(itemName, max_ln, " ") ..
             "&0 " ..
-            padLeft(value, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecond * 60), 7, " ") ..
+            padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecond * 60), 7, " ") ..
             "p/min" .. moreThanBefore)
-        if (max_ln < string.len(key)) then
-            max_ln = string.len(key)
+        if (max_ln < string.len(itemName)) then
+            max_ln = string.len(itemName)
         end
         print ""
     end
-    sleep(0.66)
+    sleep(0.33)
     print("")
     print()
 
