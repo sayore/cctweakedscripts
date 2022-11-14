@@ -53,6 +53,11 @@ if versions~=nil then
 local vJSON=json.decode(versions.readAll())
 if vJSON["eget"] ~= version then
     outdated=true
+else
+    term.setTextColor(colors.lime)
+    print("eGet is on latest Version. [Use -fa to force an update]")
+    parallel.waitForAll(liveRoutineUntil)
+    term.setTextColor(colors.white)
 end
 else
     print("Could not fetch versions from repo.")
