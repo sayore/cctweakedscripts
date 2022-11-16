@@ -196,7 +196,7 @@ if args[1]=="live" then
 
     if args[1] =="live" or args[1]=="live" then
         while true do
-            writeAbs("/"..livepath, download("http://princess-sayore.ddns.net/"..livepath))
+            egetLib.install(repoURL,args[2])
 
             os.queueEvent("kill_live")
             parallel.waitForAny(runLive, liveRoutineUntil)
@@ -212,7 +212,6 @@ if args[1]=="live" then
                 term.setTextColor(colors.lime)
                 shell.exit()
                 print("Script changed, updating")
-                
                 term.setTextColor(colors.white)
             end
 

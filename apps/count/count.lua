@@ -9,7 +9,7 @@ function startsWith(String, Start)
 end
 
 for index, value in ipairs(args) do
-    print(value)
+    --print(value)
     if startsWith(value, "--from=") == true then
         fromSide = string.sub(value, string.len("--from= "))
     end
@@ -19,22 +19,29 @@ for index, value in ipairs(args) do
 end
 
 print("FROM " .. fromSide .. " TO " .. toSide)
-os.sleep(0.2)
 
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
 local monitor = peripheral.wrap("top")
+print("Terminal Redirect!")
 term.redirect(monitor)
+print("Terminal Redirect! 2")
+monitor.clear()
 monitor.setTextScale(0.5)
+monitor.write("HELLO")
 local movedTable = {}
 local movedSinceStartTable = {}
+local movedTableLastUpdate = {}
+print("Start Cycle") --eget live count -fa
 if fs.exists("state.count.db") then
     local file = fs.open("state.count.db", "r")
     movedTable = textutils.unserialize(file.readAll())
     --movedTableLastUpdate = textutils.unserialize(file.readAll())
     file.close()
 end
-local movedTableLastUpdate = {}
+
+
+
 
 function padLeft(str, len, char)
     return string.rep(char, len - string.len(str)) .. str
@@ -94,6 +101,7 @@ function printlnWithFormat(...)
     print(" ")
 end
 
+
 function pairsByKeys (t, f)
     local a = {}
     for n in pairs(t) do table.insert(a, n) end
@@ -117,24 +125,11 @@ while true do
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
         if itemdetail ~= nil then
-            if movedTable[itemdetail["displayName"]] == nil then
-                local itemName = itemdetail["displayName"]
-                local pushed = from.pushItems(toSide, i, 64)
-                movedTable[itemName] = pushed
-                movedSinceStartTable[itemName] = pushed
-                movedTableLastUpdate[itemName] = pushed
-                
-            else
-                local itemName = itemdetail["displayName"]
-                local pushed = from.pushItems(toSide, i, 64)
-                movedTable[itemName] = movedTable[itemName] + pushed
-                table.
-                if movedSinceStartTable[key]~=nil then
-                    movedSinceStartTable[itemName] = movedSinceStartTable[itemName] + pushed
-                end
-                movedTableLastUpdate[itemName] = pushed
-            end
-
+            local pushed = from.pushItems(toSide, i, 64)
+            local itemName=itemdetail["displayName"]
+            helper.tableAddToValue(movedTable,itemName, pushed)
+            helper.tableAddToValue(movedSinceStartTable,itemName, pushed)
+            helper.tableAddToValue(movedTableLastUpdate,itemName, pushed)
         end
     end
     sleep(0.1)
@@ -146,12 +141,17 @@ while true do
     local entry = 0
     for itemName, amountMovedEver in pairsByKeys(movedTable) do
         local perSecond = 0
+        local perSecondSinceStart = 0
         if movedSinceStartTable[itemName]~=nil then
-            perSecond = movedSinceStartTable[itemName] / (now - start)
+            perSecondSinceStart = movedSinceStartTable[itemName] / (now - start)
         end
         local moreThanBefore = ""
+        local moreThanAtStart = ""
         if movedTableLastUpdate[itemName] ~= nil and movedTableLastUpdate[itemName] ~= 0 then
             moreThanBefore = " (+ " .. movedTableLastUpdate[itemName] .. " Pcs)"
+        end
+        if movedSinceStartTable[itemName] ~= nil and movedSinceStartTable[itemName] ~= 0 then
+            moreThanBefore = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&7"
@@ -166,8 +166,13 @@ while true do
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
-            padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecond * 60), 7, " ") ..
+            padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
             "p/min" .. moreThanBefore)
+        --printWithFormat(isSpecial ..
+        --    padLeft("|--", 5, " ") ..
+        --    "&0 " ..
+        --    padLeft("", 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
+        --    "p/min" .. moreThanAtStart)
         if (max_ln < string.len(itemName)) then
             max_ln = string.len(itemName)
         end

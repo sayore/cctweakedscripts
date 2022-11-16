@@ -54,4 +54,12 @@ function explode(sep, str, limit)
     return r, n
  end
 
-return {dump = dump, explode=explode}
+function tableAddToValue(table, key, value)
+    if table[key]==nil then
+      table[key] = value
+   else
+      table[key] = table[key]+value
+    end
+end
+
+return {dump = dump, explode=explode, tableAddToValue = tableAddToValue}

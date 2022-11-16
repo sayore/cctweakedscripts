@@ -12,6 +12,7 @@ function download(url, loud)
             handle = ev[3]
         end
         if ev[1] == "http_failure" then
+            
             return false
         end
 
@@ -21,8 +22,11 @@ function download(url, loud)
 end
 
 function writeAbs(filepath, handle, loud)
+    print(filepath)
     -- In case we don't get data back return false!
-    if (handle == false) then return false end
+    if (handle == false) then 
+        return false
+    end
     local filedata = handle.readAll()
     handle.close()
 
@@ -82,8 +86,10 @@ function install(repoURL, appName, depth, depthN)
     local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. "/" .. pathToAppDir .. "package.json"))
 
     if success ~= false and fs.exists(pathToAppDir .. "package.json") == true then
-        local file = fs.open(pathToAppDir .. ".json", "r")
+        --print(pathToAppDir .. "package.json")
+        local file = fs.open(pathToAppDir .. "package.json", "r")
         local fileContent = file.readAll()
+        file.close()
         --print(fileContent)
 
         local jsonResult = json.decode(fileContent)
@@ -107,6 +113,7 @@ function install(repoURL, appName, depth, depthN)
     else
         printlnWithFormat(depth .. " &5has been installed!")
     end
+    return
 end
 
 function installLib()
