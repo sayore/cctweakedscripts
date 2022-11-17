@@ -83,6 +83,7 @@ function install(repoURL, appName, depth, depthN)
 
     local pathToAppDir = "/apps/" .. appName .. "/"
     writeAbs(pathToAppDir .. appName .. ".lua", download(repoURL .. "/" .. pathToAppDir .. appName .. ".lua"))
+    writeAbs(pathToAppDir .. "version", download(repoURL .. "/" .. pathToAppDir .. "version"))
     local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. "/" .. pathToAppDir .. "package.json"))
 
     if success ~= false and fs.exists(pathToAppDir .. "package.json") == true then

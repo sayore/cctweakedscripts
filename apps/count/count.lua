@@ -3,6 +3,7 @@ local helper = require "/apps/helperLib/helperLib"
 local args = { ... }
 local fromSide = "back"
 local toSide = "right"
+local toMonitor = "top"
 
 function startsWith(String, Start)
     return string.sub(String, 1, string.len(Start)) == Start
@@ -16,19 +17,31 @@ for index, value in ipairs(args) do
     if startsWith(value, "--to=") == true then
         toSide = string.sub(value, string.len("--to= "))
     end
+    if startsWith(value, "--monitor=") == true then
+        toMonitor = string.sub(value, string.len("--monitor= "))
+    end
 end
 
-print("FROM " .. fromSide .. " TO " .. toSide)
+print("FROM " .. fromSide .. " TO " .. toSide .. " INTO MONITOR " .. toMonitor)
 
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
-local monitor = peripheral.wrap("top")
-print("Terminal Redirect!")
+local monitor = peripheral.wrap(toMonitor)
+local version = 0
+if fs.exists("/apps/count/version") then
+    local file = fs.open("/apps/count/version", "r")
+    version=file.readAll()
+    print("Version file exists!")
+    file.close()
+end
+print("Arguments: ",dump(args))
+print("Terminal Redirect! (Build "..version..")")
 term.redirect(monitor)
 print("Terminal Redirect! 2")
 monitor.clear()
 monitor.setTextScale(0.5)
 monitor.write("HELLO")
+monitor.setBackgroundColor(colors.black)
 local movedTable = {}
 local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
@@ -51,30 +64,32 @@ function padRight(str, len, char)
     return str .. string.rep(char, len - string.len(str))
 end
 
-local specialItems = {}
-specialItems["Lead Ore"] = "&b"
-specialItems["Ancient Debris"] = "&1"
-specialItems["Diamond Ore"] = "&3"
-specialItems["Emerald Ore"] = "&5"
-specialItems["Gold Ore"] = "&4"
-specialItems["Iron Ore"] = "&8"
-specialItems["Glowstone"] = "&4"
-specialItems["Nikolite Ore"] = "&9"
+local specialItems = {
+    ["Lead Ore"]        = "&b",
+    ["Ancient Debris"]  = "&1",
+    ["Diamond Ore"]     = "&3",
+    ["Emerald Ore"]     = "&5",
+    ["Gold Ore"]        = "&4",
+    ["Iron Ore"]        = "&8",
+    ["Glowstone"]       = "&4",
+    ["Nikolite Ore"]    = "&9"
+}
 
-local specialWords = {}
-specialWords["Lead"] = "&b"
-specialWords["Nether"] = "&1"
-specialWords["Diamond"] = "&3"
-specialWords["Emerald"] = "&5"
-specialWords["Copper"] = "&1"
-specialWords["Bronze"] = "&1"
-specialWords["Gold"] = "&4"
-specialWords["Iron"] = "&8"
-specialWords["Steel"] = "&8"
-specialWords["Aluminum"] = "&0"
-specialWords["Glowstone"] = "&4"
-specialWords["Invar"] = "&5"
-specialWords["Nikolite"] = "&9"
+local specialWords = {
+    ["Lead"] = "&b",
+    ["Nether"] = "&1",
+    ["Diamond"] = "&3",
+    ["Emerald"] = "&5",
+    ["Copper"] = "&1",
+    ["Bronze"] = "&1",
+    ["Gold"] = "&4",
+    ["Iron"] = "&8",
+    ["Steel"] = "&8",
+    ["Aluminum"] = "&0",
+    ["Glowstone"] = "&4",
+    ["Invar"] = "&5",
+    ["Nikolite"] = "&9"
+}
 
 function printWithFormat(...)
     local s = "&1"
@@ -151,7 +166,7 @@ while true do
             moreThanBefore = " (+ " .. movedTableLastUpdate[itemName] .. " Pcs)"
         end
         if movedSinceStartTable[itemName] ~= nil and movedSinceStartTable[itemName] ~= 0 then
-            moreThanBefore = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
+            moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&7"
@@ -184,6 +199,9 @@ while true do
 
     updateCycle = updateCycle + 1
     if updateCycle % 10 == 9 then
+        local monitor = peripheral.wrap(toMonitor)
+        term.redirect(monitor)
+
         local file = fs.open("state.count.db", "w")
         file.write(textutils.serialize(movedTable), { compact = true })
         file.close()

@@ -2,7 +2,7 @@
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
 --local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
 local args = {...}
-local repoURL = "http://princess-sayore.ddns.net"
+local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
 
 term.clear()
 
@@ -125,7 +125,7 @@ end
 if args[1] =="-r" or args[1]=="run"  then
     local path = "/apps/"..args[2].."/"..args[2]
     print("Trying to run "..path..".lua\n")
-    shell.run(path..".lua");
+    shell.run(path..".lua", table.concat(args," "));
 end
 
 if args[1] =="-u" or args[1]=="uninstall"  then
@@ -194,7 +194,7 @@ if args[1]=="live" then
         coroutine_state ="script_exit"
     end
 
-    if args[1] =="live" or args[1]=="live" then
+    if args[1]=="live" then
         while true do
             egetLib.install(repoURL,args[2])
 
@@ -217,9 +217,9 @@ if args[1]=="live" then
 
             if coroutine_state=="closed" then
                 term.setTextColor(colors.red)
-                print("Websocket Closed? Exiting")
+                print("WebSocket Closed, trying reconnecting in 2s (a)")
+                sleep(2)
                 term.setTextColor(colors.white)
-                return
             end
             
             coroutine_state="none"

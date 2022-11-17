@@ -1,4 +1,5 @@
 const chokidar = require('chokidar');
+const fs = require('fs')
 // Importing the required modules
 const WebSocketServer = require('ws');
  
@@ -7,12 +8,32 @@ const wss = new WebSocketServer.Server({ port: 8081 })
 
 // One-liner for current directory
 
+function updateBuildVersionNumber(appname) {
+    var versionNumber= -1;
+    if(fs.existsSync('./apps/'+appname+"/version"))
+    versionNumber = Number(fs.readFileSync('./apps/'+appname+"/version"))
+    fs.writeFileSync('./apps/'+appname+"/version",(versionNumber+1).toString())
+}
+
+/** Update eGet's Version number */
+async function updateEVN(){
+    chokidar.watch('./eget.lua').on('change', (path) => {
+        console.log('./eget.lua updated');
+        var versionNumber= -1;
+        if(fs.existsSync('./version'))
+        versionNumber = Number(fs.readFileSync('./version'))
+        fs.writeFileSync('./version',(versionNumber+1).toString())
+    });
+}
+
+updateEVN(); 
 
 // Creating connection using websocket
 wss.on("connection", (ws,req) => {
     async function choki(appname){
-        chokidar.watch('./apps/'+appname).on('change', (path) => {
+        chokidar.watch('./apps/'+appname+"/**/*.lua").on('change', (path) => {
             console.log(path);
+            updateBuildVersionNumber(appname)
             ws.send(JSON.stringify({type:"update",path}))
             console.log("update");
         });
@@ -28,7 +49,7 @@ wss.on("connection", (ws,req) => {
     });
     // handling what to do when clients disconnects from server
     ws.on("close", () => {
-        console.log("the client has connected");
+        console.log("the client has disconnected");
     });
     // handling client connection error
     ws.onerror = function () {
