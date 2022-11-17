@@ -7,9 +7,10 @@ To install simply do
 
 Then you can use
 
-eget install [appname]
-eget run [appname]
-eget live [appname]
+`eget help`
+`eget install [appname]`
+`eget run [appname]`
+`eget live [appname]`
 
 ## Using your own Repo
 
