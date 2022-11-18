@@ -82,9 +82,9 @@ function install(repoURL, appName, depth, depthN)
     depth = string.rep("&8|",depthN) .. depth
 
     local pathToAppDir = "/apps/" .. appName .. "/"
-    writeAbs(pathToAppDir .. appName .. ".lua", download(repoURL .. "/" .. pathToAppDir .. appName .. ".lua"))
-    writeAbs(pathToAppDir .. "version", download(repoURL .. "/" .. pathToAppDir .. "version"))
-    local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. "/" .. pathToAppDir .. "package.json"))
+    writeAbs(pathToAppDir .. appName .. ".lua", download(repoURL  .. pathToAppDir .. appName .. ".lua"))
+    writeAbs(pathToAppDir .. "version", download(repoURL .. pathToAppDir .. "version"))
+    local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. pathToAppDir .. "package.json"))
 
     if success ~= false and fs.exists(pathToAppDir .. "package.json") == true then
         --print(pathToAppDir .. "package.json")
@@ -103,7 +103,7 @@ function install(repoURL, appName, depth, depthN)
                 else
                     printlnWithFormat(depth .. " Package depends on " .. key .. " ..")
                     install(repoURL, key, depth, depthN + 1)
-                    --print(depth .." has been installed!")
+                    print(depth .." has been installed!")
                 end
             end
         end
@@ -114,7 +114,6 @@ function install(repoURL, appName, depth, depthN)
     else
         printlnWithFormat(depth .. " &5has been installed!")
     end
-    return
 end
 
 function installLib()
