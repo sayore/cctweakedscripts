@@ -1,8 +1,8 @@
 --# wget run http://princess-sayore.ddns.net/eget.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
---local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
+local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
+--local repoURL = "http://princess-sayore.ddns.net"
 local args = { ... }
-local repoURL = "http://princess-sayore.ddns.net"
 if args[1] == "wget" then
     print("Active Repo: " .. repoURL)
 end
