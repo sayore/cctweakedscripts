@@ -1,7 +1,8 @@
 --# wget run http://princess-sayore.ddns.net/eget.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
-local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
---local repoURL = "http://princess-sayore.ddns.net"
+--local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
+local repoURL = "http://princess-sayore.ddns.net"
+local wsURL =   "ws://princess-sayore.ddns.net"
 local args = { ... }
 if args[1] == "wget" then
     print("Active Repo: " .. repoURL)
@@ -128,6 +129,10 @@ if args[1] == "-i" or args[1] == "install" then
 end
 
 if args[1] == "-r" or args[1] == "run" then
+    if any(args, "-fu") then
+        install(repoURL,args[2])
+    end
+
     local path = "/apps/" .. args[2] .. "/" .. args[2]
     print("Trying to run " .. path .. ".lua\n")
     shell.run(path .. ".lua", table.concat(args, " "));
@@ -143,50 +148,51 @@ if args[1] == "-l" or args[1] == "list" then
     fs.delete(path .. ".lua")
 end
 
+local livews
 if args[1] == "live" then
     local coroutine_state = "none"
     local livepath = "apps/" .. args[2] .. "/" .. args[2] .. ".lua"
-    local livews
     function liveRoutineUntil()
-        http.websocketAsync("ws://princess-sayore.ddns.net:8081", { app = args[2] })
+        http.websocketAsync(wsURL, { app = args[2], method = "watch" })
 
-        function keepAlive()
-            while true do
-                os.sleep(0.2)
-            end
-        end
-        function pacman()
-            while true do
-                local ev = { os.pullEvent() }
 
-                if ev[1] == "websocket_message" then
-                    local msg = json.decode(ev[3])
-                    if (msg["type"] == "update") then
-                        term.setTextColor(colors.lime)
-                        print(msg["path"] .. " changed.")
-                        term.setTextColor(colors.white)
-                        livews.send("got it!")
-                        livews.close()
-                        coroutine_state = "reload"
-                        return
-                    end
-                end
-                if ev[1] == "websocket_failure" then
-                    print(ev[3])
-                end
-                if ev[1]=="websocket_closed" then
-                    coroutine_state="closed"
+        while true do
+            local ev = { os.pullEventRaw() }
+
+            if ev[1] == "websocket_message" then
+                local msg = json.decode(ev[3])
+                if (msg["type"] == "update") then
+                    term.setTextColor(colors.lime)
+                    print(msg["path"] .. " changed.")
+                    term.setTextColor(colors.white)
+                    livews.send("got it!")
+                    livews.send("exit")
+                    coroutine_state = "reload"
                     return
                 end
-                if ev[1] == "websocket_success" then
-                    --print("Websocket Connected")
-                    livews = ev[3]
-                    livews.send("hello")
-                end
+            end
+            if ev[1] == "websocket_failure" then
+                print(ev[3])
+            end
+            if ev[1] == "websocket_closed" then
+                coroutine_state = "closed"
+                return
+            end
+            if ev[1] == "websocket_success" then
+                --print("Websocket Connected")
+                livews = ev[3]
+                livews.send("hello")
+            end
+            if ev[1] == "terminate" then
+                print("Caught terminate event!")
+                debugws.send("exit")
+                --livews.close()
+                coroutine_state = "exit"
+                sleep(1)
+                return
             end
         end
 
-        parallel.waitForAny(keepAlive, pacman)
     end
 
     function strjoin(delimiter, list)
@@ -212,13 +218,15 @@ if args[1] == "live" then
         while true do
             egetLib.install(repoURL, args[2])
 
-            os.queueEvent("kill_live")
             parallel.waitForAny(runLive, liveRoutineUntil)
+
+            os.sleep(1)
 
             if coroutine_state == "script_exit" then
                 term.setTextColor(colors.lime)
                 print("Script exited, waiting for changes...")
                 parallel.waitForAll(liveRoutineUntil)
+                livews.close()
                 term.setTextColor(colors.white)
             end
 
@@ -232,7 +240,13 @@ if args[1] == "live" then
             if coroutine_state == "closed" then
                 term.setTextColor(colors.red)
                 print("WebSocket Closed")
+                livews.close()
+                livews=nil
                 term.setTextColor(colors.white)
+            end
+
+            if coroutine_state == "exit" then
+                return
             end
 
             coroutine_state = "none"
