@@ -67,7 +67,7 @@ monitor.setBackgroundColor(colors.black)
 local movedTable = {}
 local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
-print("Start Cycle") --eget live count -fa
+print("\nStart Cycle") --eget live count -fa
 if fs.exists("state.count.db") then
     local file = fs.open("state.count.db", "r")
     movedTable = textutils.unserialize(file.readAll())
@@ -158,7 +158,9 @@ local start = os.clock()
 local updateCycle = 0
 while true do
     local now = os.clock()
+    print("\nRead Clock")
     table.sort(movedTable);
+    print("\nSorted Table")
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
         if itemdetail ~= nil then
@@ -170,6 +172,7 @@ while true do
             sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
+    print("\nSend Data to WS")
     sleep(0.1)
     term.clear()
     monitor.setCursorPos(1, 1)
