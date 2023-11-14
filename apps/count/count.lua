@@ -162,6 +162,7 @@ while true do
     if debug then print("\nRead Clock") end
     table.sort(movedTable)
     if debug then print("\nSorted Table") end
+
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
         if itemdetail ~= nil then
