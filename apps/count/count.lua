@@ -33,13 +33,7 @@ print("Runtime Info")
 print("FROM " .. fromSide .. " -> " .. toSide)
 print("INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
 
-local waitTime = 3.5
-while waitTime >= 0 do
-    term.setCursorPos(1, 1)
-    print("Starting in " .. waitTime .. "s")
-    sleep(0.5)
-    waitTime=waitTime-0.5
-end
+
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
 
@@ -60,7 +54,7 @@ local monitor = term.current()
 if toMonitor~=nil then
     local monitor = peripheral.wrap(toMonitor)
     monitor.setTextScale(0.5)
-    print("Bound Monitor {"..monitor.."}["..toMonitor.."]")
+    print("Bound Monitor {"..(monitor and "a monitor" or "???").."}["..toMonitor.."]")
     sleep(1)
 end
 local version = 0
@@ -76,11 +70,21 @@ term.redirect(monitor)
 print("Terminal Redirect! 2")
 monitor.clear()
 
-monitor.write("HELLO\n")
 monitor.setBackgroundColor(colors.black)
 local movedTable = {}
 local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
+
+local waitTime = 5
+while waitTime >= 0 do
+    term.setCursorPos(1, 1)
+    print("Starting in         ")
+    term.setCursorPos(1, 1)
+    print("Starting in " .. waitTime .. "s")
+    sleep(0.2)
+    waitTime=waitTime-0.2
+end
+
 print("\nStart Cycle") --eget live count -fa
 if fs.exists("state.count.db") then
     local file = fs.open("state.count.db", "r")
