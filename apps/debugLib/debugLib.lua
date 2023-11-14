@@ -1,7 +1,7 @@
 json = require("/eget/libs/json")
 local debugws
 function sendDebugToWS(msg)
-    http.websocketAsync("ws://princess-sayore.ddns.net", { app = "debugLib", method = "debugLog" })
+    http.websocketAsync("ws://cozycatcrew.de:1380", { app = "debugLib", method = "debugLog" })
 
     while true do
         local ev = { os.pullEvent() }
