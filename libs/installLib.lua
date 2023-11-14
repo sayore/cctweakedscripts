@@ -1,73 +1,7 @@
 local json = require "/eget/libs/json"
-local helper = require "/eget/libs/helper"
-
-function download(url, loud)
-    local myURL = url
-    http.request(myURL)
-    local event, url, handle
-    repeat
-        local ev = { os.pullEvent() }
-        if ev[1] == "http_success" then
-            url = ev[2]
-            handle = ev[3]
-        end
-        if ev[1] == "http_failure" then
-            
-            return false
-        end
-
-    until url == myURL
-
-    return handle
-end
-
-function writeAbs(filepath, handle, loud)
-    print(filepath)
-    -- In case we don't get data back return false!
-    if (handle == false) then 
-        return false
-    end
-    local filedata = handle.readAll()
-    handle.close()
-
-    local file = fs.open(filepath, "w")
-    file.write(filedata)
-    file.close()
-    -- return true if wwe were succesful writing the data to disk
-    return true;
-end
-
-function checkVersion()
-
-end
 
 function checkIsInstalled(appName)
     return fs.exists("/apps/" .. appName .. "/" .. appName)
-end
-
-function printWithFormat(...)
-    local s = "&1"
-    for k, v in ipairs(arg) do
-        s = s .. v
-    end
-    s = s .. "&0"
-
-    local fields = {}
-    local lastcolor, lastpos = "0", 0
-    for pos, clr in s:gmatch "()&(%x)" do
-        table.insert(fields, { s:sub(lastpos + 2, pos - 1), lastcolor })
-        lastcolor, lastpos = clr, pos
-    end
-
-    for i = 2, #fields do
-        term.setTextColor(2 ^ (tonumber(fields[i][2], 16)))
-        io.write(fields[i][1])
-    end
-end
-
-function printlnWithFormat(...)
-    printWithFormat(...)
-    print(" ")
 end
 
 function install(repoURL, appName, depth, depthN)

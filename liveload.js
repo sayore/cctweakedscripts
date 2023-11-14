@@ -1,13 +1,23 @@
-const chokidar = require('chokidar');
-const fs = require('fs')
+import chokidar from 'chokidar';
+import fs from 'fs'
+import crypto from 'crypto'
 // Importing the required modules
-const WebSocketServer = require('ws');
-let app = require('./main');
+import * as ws from 'ws';
 
-let server = require('http').createServer();
- 
+import app from './main.js';
+import http from 'http';
+
+
+let server = http.createServer();
+
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
+
 // Creating a new websocket server
-const wss = new WebSocketServer.Server({ 
+const wss = new ws.WebSocketServer({ 
     server: server,
     perMessageDeflate: false
 })
@@ -33,7 +43,7 @@ async function updateEVN(){
 }
 
 updateEVN(); 
-var openedApps=[];
+var countWatchers = [];
 
 // Creating connection using websocket
 wss.on("connection", (ws,req) => {
@@ -45,15 +55,42 @@ wss.on("connection", (ws,req) => {
             console.log("["+wss.clients.size+"]","update");
         });
     }
-    if(req.headers.app==null) ws.close();
+    //if(req.headers.app==null) ws.close();
     if(req.headers.app!=null && req.headers.method =="watch")
     choki(req.headers.app);
     console.log("["+wss.clients.size+"]","Client asks for watcher on app "+req.headers.app);
     ws.send(JSON.stringify({type:"keepalive",msg:"Hello!"}))
     // sending message
+    if(req.headers['sec-websocket-protocol']=="watchCount"){
+        countWatchers.push(ws);
+    }
     ws.on("message", data => {
-        console.log("["+wss.clients.size+"]",`Client has sent us: ${data}`)
         if(data == "exit") ws.close()
+        try{
+            if(typeof(data)=="object") data = data.toString()
+            var parsedData=JSON.parse(data)
+            console.log("WS","Loose Data ",parsedData,"[ is "+typeof(data)+", is parsed to JSON ]");
+        } catch {
+            console.log("Loose Data",data," [ is "+typeof(data)+", could not be parsed to JSON ]");
+            var parsedData=data
+        }
+        //Send for WebApp Register
+        if(parsedData.type=="register") {
+            ws.id = crypto.randomUUID();
+            ws.send(JSON.stringify({type:"registerAnswer",id:ws.id}))
+        }
+        //Send for WebApp Check Sessions State
+        if(parsedData.type=="getState") {
+            ws.send(JSON.stringify({type:"getStateAnswer",id:ws.id}));
+        }
+        //Send from a Turtle or PC, not implemeneted there yet
+        if(parsedData.type=="sendCountData") {
+            countWatchers.forEach(wse => {
+                wse.send(JSON.stringify({type:"somethingChanged",data:parsedData.data}));
+            });
+            ws.close()
+        }
+        
     });
     // handling what to do when clients disconnects from server
     ws.on("close", () => {
@@ -66,6 +103,6 @@ wss.on("connection", (ws,req) => {
     }
 });
 
-server.listen(80, function() {
+server.listen(1380, function() {
     console.log(`uwu combo server on 80`);
 });

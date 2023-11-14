@@ -1,0 +1,622 @@
+--[[ 0: ]]function dump(o)
+--[[ 1: ]]    if type(o) == 'table' then
+--[[ 2: ]]        local s = '{ '
+--[[ 3: ]]        for k, v in pairs(o) do
+--[[ 4: ]]            if type(k) ~= 'number' then k = '"' .. k .. '"' end
+--[[ 5: ]]            s = s .. '[' .. k .. '] = ' .. dump(v) .. ','
+--[[ 6: ]]        end
+--[[ 7: ]]        return s .. '} '
+--[[ 8: ]]    else
+--[[ 9: ]]        return tostring(o)
+--[[ 10: ]]    end
+--[[ 11: ]]end
+--[[ 12: ]]
+--[[ 13: ]]function any(array, search)
+--[[ 14: ]]   for key, value in pairs(array) do
+--[[ 15: ]]       if (value == search) then return true end
+--[[ 16: ]]   end
+--[[ 17: ]]   return false
+--[[ 18: ]]end
+--[[ 19: ]]
+--[[ 20: ]]function explode(sep, str, limit)
+--[[ 21: ]]    if not sep or sep == "" then
+--[[ 22: ]]       return false
+--[[ 23: ]]    end
+--[[ 24: ]]    if not str then
+--[[ 25: ]]       return false
+--[[ 26: ]]    end
+--[[ 27: ]]    limit = limit or mhuge
+--[[ 28: ]]    if limit == 0 or limit == 1 then
+--[[ 29: ]]       return {str}, 1
+--[[ 30: ]]    end
+--[[ 31: ]] 
+--[[ 32: ]]    local r = {}
+--[[ 33: ]]    local n, init = 0, 1
+--[[ 34: ]] 
+--[[ 35: ]]    while true do
+--[[ 36: ]]       local s,e = strfind(str, sep, init, true)
+--[[ 37: ]]       if not s then
+--[[ 38: ]]          break
+--[[ 39: ]]       end
+--[[ 40: ]]       r[#r+1] = strsub(str, init, s - 1)
+--[[ 41: ]]       init = e + 1
+--[[ 42: ]]       n = n + 1
+--[[ 43: ]]       if n == limit - 1 then
+--[[ 44: ]]          break
+--[[ 45: ]]       end
+--[[ 46: ]]    end
+--[[ 47: ]] 
+--[[ 48: ]]    if init <= strlen(str) then
+--[[ 49: ]]       r[#r+1] = strsub(str, init)
+--[[ 50: ]]    else
+--[[ 51: ]]       r[#r+1] = ""
+--[[ 52: ]]    end
+--[[ 53: ]]    n = n + 1
+--[[ 54: ]] 
+--[[ 55: ]]    if limit < 0 then
+--[[ 56: ]]       for i=n, n + limit + 1, -1 do r[i] = nil end
+--[[ 57: ]]       n = n + limit
+--[[ 58: ]]    end
+--[[ 59: ]] 
+--[[ 60: ]]    return r, n
+--[[ 61: ]] end
+--[[ 62: ]]
+--[[ 63: ]]function tableAddToValue(table, key, value)
+--[[ 64: ]]    if table[key]==nil then
+--[[ 65: ]]      table[key] = value
+--[[ 66: ]]   else
+--[[ 67: ]]      table[key] = table[key]+value
+--[[ 68: ]]    end
+--[[ 69: ]]end
+--[[ 70: ]]
+--[[ 71: ]]local random = math.randomseed(tonumber(tostring(os.time()):reverse():sub(1, 9)))
+--[[ 72: ]]function uuid()
+--[[ 73: ]]    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+--[[ 74: ]]    return string.gsub(template, '[xy]', function (c)
+--[[ 75: ]]        local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+--[[ 76: ]]        return string.format('%x', v)
+--[[ 77: ]]    end)
+--[[ 78: ]]end
+--[[ 79: ]]
+--[[ 80: ]]function download(url, loud)
+--[[ 81: ]]   local myURL = url
+--[[ 82: ]]   http.request(myURL)
+--[[ 83: ]]   local event, url, handle
+--[[ 84: ]]   repeat
+--[[ 85: ]]       local ev = { os.pullEvent() }
+--[[ 86: ]]       if ev[1] == "http_success" then
+--[[ 87: ]]           url = ev[2]
+--[[ 88: ]]           handle = ev[3]
+--[[ 89: ]]       end
+--[[ 90: ]]       if ev[1] == "http_failure" then
+--[[ 91: ]]           
+--[[ 92: ]]           return false
+--[[ 93: ]]       end
+--[[ 94: ]]
+--[[ 95: ]]   until url == myURL
+--[[ 96: ]]
+--[[ 97: ]]   return handle
+--[[ 98: ]]end
+--[[ 99: ]]
+--[[ 100: ]]function writeAbs(filepath, handle, loud)
+--[[ 101: ]]   print(filepath)
+--[[ 102: ]]   -- In case we don't get data back return false!
+--[[ 103: ]]   if (handle == false) then 
+--[[ 104: ]]       return false
+--[[ 105: ]]   end
+--[[ 106: ]]   local filedata = handle.readAll()
+--[[ 107: ]]   handle.close()
+--[[ 108: ]]
+--[[ 109: ]]   local file = fs.open(filepath, "w")
+--[[ 110: ]]   file.write(filedata)
+--[[ 111: ]]   file.close()
+--[[ 112: ]]   -- return true if wwe were succesful writing the data to disk
+--[[ 113: ]]   return true;
+--[[ 114: ]]end
+--[[ 115: ]]
+--[[ 116: ]]function printWithFormat(...)
+--[[ 117: ]]   local s = "&1"
+--[[ 118: ]]   for k, v in ipairs(arg) do
+--[[ 119: ]]       s = s .. v
+--[[ 120: ]]   end
+--[[ 121: ]]   s = s .. "&0"
+--[[ 122: ]]
+--[[ 123: ]]   local fields = {}
+--[[ 124: ]]   local lastcolor, lastpos = "0", 0
+--[[ 125: ]]   for pos, clr in s:gmatch "()&(%x)" do
+--[[ 126: ]]       table.insert(fields, { s:sub(lastpos + 2, pos - 1), lastcolor })
+--[[ 127: ]]       lastcolor, lastpos = clr, pos
+--[[ 128: ]]   end
+--[[ 129: ]]
+--[[ 130: ]]   for i = 2, #fields do
+--[[ 131: ]]       term.setTextColor(2 ^ (tonumber(fields[i][2], 16)))
+--[[ 132: ]]       io.write(fields[i][1])
+--[[ 133: ]]   end
+--[[ 134: ]]end
+--[[ 135: ]]
+--[[ 136: ]]function printlnWithFormat(...)
+--[[ 137: ]]   printWithFormat(...)
+--[[ 138: ]]   print(" ")
+--[[ 139: ]]end
+--[[ 140: ]]
+--[[ 141: ]]-- REMOVED REQUIRE local json = require "/eget/libs/json"
+--[[ 142: ]]-- REMOVED REQUIRE local helper = require "/eget/libs/helper"
+--[[ 143: ]]
+--[[ 144: ]]function checkIsInstalled(appName)
+--[[ 145: ]]    return fs.exists("/apps/" .. appName .. "/" .. appName)
+--[[ 146: ]]end
+--[[ 147: ]]
+--[[ 148: ]]function install(repoURL, appName, depth, depthN)
+--[[ 149: ]]    if depthN == nil then depthN = 0 end
+--[[ 150: ]]    if depth == nil then
+--[[ 151: ]]        printlnWithFormat("Installing " .. appName)
+--[[ 152: ]]        depth = "&7-"
+--[[ 153: ]]    else
+--[[ 154: ]]        printlnWithFormat(depth .. " Installing " .. appName)
+--[[ 155: ]]    end
+--[[ 156: ]]
+--[[ 157: ]]    depth = string.rep("&8|",depthN) .. depth
+--[[ 158: ]]
+--[[ 159: ]]    local pathToAppDir = "/apps/" .. appName .. "/"
+--[[ 160: ]]    writeAbs(pathToAppDir .. appName .. ".lua", download(repoURL  .. pathToAppDir .. appName .. ".lua"))
+--[[ 161: ]]    writeAbs(pathToAppDir .. "version", download(repoURL .. pathToAppDir .. "version"))
+--[[ 162: ]]    local success = writeAbs(pathToAppDir .. "package.json", download(repoURL .. pathToAppDir .. "package.json"))
+--[[ 163: ]]
+--[[ 164: ]]    if success ~= false and fs.exists(pathToAppDir .. "package.json") == true then
+--[[ 165: ]]        --print(pathToAppDir .. "package.json")
+--[[ 166: ]]        local file = fs.open(pathToAppDir .. "package.json", "r")
+--[[ 167: ]]        local fileContent = file.readAll()
+--[[ 168: ]]        file.close()
+--[[ 169: ]]        --print(fileContent)
+--[[ 170: ]]
+--[[ 171: ]]        local jsonResult = json.decode(fileContent)
+--[[ 172: ]]
+--[[ 173: ]]        if (jsonResult['dependencies'] ~= nil) then
+--[[ 174: ]]            for key, value in pairs(jsonResult['dependencies']) do
+--[[ 175: ]]                if checkIsInstalled(key) then
+--[[ 176: ]]                    printlnWithFormat(depth .. colors.green .. " Package depends on " .. key .. "..")
+--[[ 177: ]]                    printlnWithFormat(depth .. "&5 is installed!")
+--[[ 178: ]]                else
+--[[ 179: ]]                    printlnWithFormat(depth .. " Package depends on " .. key .. " ..")
+--[[ 180: ]]                    install(repoURL, key, depth, depthN + 1)
+--[[ 181: ]]                    print(depth .." has been installed!")
+--[[ 182: ]]                end
+--[[ 183: ]]            end
+--[[ 184: ]]        end
+--[[ 185: ]]    end
+--[[ 186: ]]
+--[[ 187: ]]    if (depthN==0) then
+--[[ 188: ]]        printlnWithFormat("&5has been installed!")
+--[[ 189: ]]    else
+--[[ 190: ]]        printlnWithFormat(depth .. " &5has been installed!")
+--[[ 191: ]]    end
+--[[ 192: ]]end
+--[[ 193: ]]
+--[[ 194: ]]function installLib()
+--[[ 195: ]]
+--[[ 196: ]]end
+--[[ 197: ]]
+--[[ 198: ]]--
+--[[ 199: ]]-- json.lua
+--[[ 200: ]]--
+--[[ 201: ]]-- Copyright (c) 2020 rxi
+--[[ 202: ]]--
+--[[ 203: ]]-- Permission is hereby granted, free of charge, to any person obtaining a copy of
+--[[ 204: ]]-- this software and associated documentation files (the "Software"), to deal in
+--[[ 205: ]]-- the Software without restriction, including without limitation the rights to
+--[[ 206: ]]-- use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+--[[ 207: ]]-- of the Software, and to permit persons to whom the Software is furnished to do
+--[[ 208: ]]-- so, subject to the following conditions:
+--[[ 209: ]]--
+--[[ 210: ]]-- The above copyright notice and this permission notice shall be included in all
+--[[ 211: ]]-- copies or substantial portions of the Software.
+--[[ 212: ]]--
+--[[ 213: ]]-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+--[[ 214: ]]-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+--[[ 215: ]]-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+--[[ 216: ]]-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+--[[ 217: ]]-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+--[[ 218: ]]-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+--[[ 219: ]]-- SOFTWARE.
+--[[ 220: ]]--
+--[[ 221: ]]
+--[[ 222: ]]local json = { _version = "0.1.2" }
+--[[ 223: ]]
+--[[ 224: ]]-------------------------------------------------------------------------------
+--[[ 225: ]]-- Encode
+--[[ 226: ]]-------------------------------------------------------------------------------
+--[[ 227: ]]
+--[[ 228: ]]local encode
+--[[ 229: ]]
+--[[ 230: ]]local escape_char_map = {
+--[[ 231: ]]  [ "\\" ] = "\\",
+--[[ 232: ]]  [ "\"" ] = "\"",
+--[[ 233: ]]  [ "\b" ] = "b",
+--[[ 234: ]]  [ "\f" ] = "f",
+--[[ 235: ]]  [ "\n" ] = "n",
+--[[ 236: ]]  [ "\r" ] = "r",
+--[[ 237: ]]  [ "\t" ] = "t",
+--[[ 238: ]]}
+--[[ 239: ]]
+--[[ 240: ]]local escape_char_map_inv = { [ "/" ] = "/" }
+--[[ 241: ]]for k, v in pairs(escape_char_map) do
+--[[ 242: ]]  escape_char_map_inv[v] = k
+--[[ 243: ]]end
+--[[ 244: ]]
+--[[ 245: ]]
+--[[ 246: ]]local function escape_char(c)
+--[[ 247: ]]  return "\\" .. (escape_char_map[c] or string.format("u%04x", c:byte()))
+--[[ 248: ]]end
+--[[ 249: ]]
+--[[ 250: ]]
+--[[ 251: ]]local function encode_nil(val)
+--[[ 252: ]]  return "null"
+--[[ 253: ]]end
+--[[ 254: ]]
+--[[ 255: ]]
+--[[ 256: ]]local function encode_table(val, stack)
+--[[ 257: ]]  local res = {}
+--[[ 258: ]]  stack = stack or {}
+--[[ 259: ]]
+--[[ 260: ]]  -- Circular reference?
+--[[ 261: ]]  if stack[val] then error("circular reference") end
+--[[ 262: ]]
+--[[ 263: ]]  stack[val] = true
+--[[ 264: ]]
+--[[ 265: ]]  if rawget(val, 1) ~= nil or next(val) == nil then
+--[[ 266: ]]    -- Treat as array -- check keys are valid and it is not sparse
+--[[ 267: ]]    local n = 0
+--[[ 268: ]]    for k in pairs(val) do
+--[[ 269: ]]      if type(k) ~= "number" then
+--[[ 270: ]]        error("invalid table: mixed or invalid key types")
+--[[ 271: ]]      end
+--[[ 272: ]]      n = n + 1
+--[[ 273: ]]    end
+--[[ 274: ]]    if n ~= #val then
+--[[ 275: ]]      error("invalid table: sparse array")
+--[[ 276: ]]    end
+--[[ 277: ]]    -- Encode
+--[[ 278: ]]    for i, v in ipairs(val) do
+--[[ 279: ]]      table.insert(res, encode(v, stack))
+--[[ 280: ]]    end
+--[[ 281: ]]    stack[val] = nil
+--[[ 282: ]]    return "[" .. table.concat(res, ",") .. "]"
+--[[ 283: ]]
+--[[ 284: ]]  else
+--[[ 285: ]]    -- Treat as an object
+--[[ 286: ]]    for k, v in pairs(val) do
+--[[ 287: ]]      if type(k) ~= "string" then
+--[[ 288: ]]        error("invalid table: mixed or invalid key types")
+--[[ 289: ]]      end
+--[[ 290: ]]      table.insert(res, encode(k, stack) .. ":" .. encode(v, stack))
+--[[ 291: ]]    end
+--[[ 292: ]]    stack[val] = nil
+--[[ 293: ]]    return "{" .. table.concat(res, ",") .. "}"
+--[[ 294: ]]  end
+--[[ 295: ]]end
+--[[ 296: ]]
+--[[ 297: ]]
+--[[ 298: ]]local function encode_string(val)
+--[[ 299: ]]  return '"' .. val:gsub('[%z\1-\31\\"]', escape_char) .. '"'
+--[[ 300: ]]end
+--[[ 301: ]]
+--[[ 302: ]]
+--[[ 303: ]]local function encode_number(val)
+--[[ 304: ]]  -- Check for NaN, -inf and inf
+--[[ 305: ]]  if val ~= val or val <= -math.huge or val >= math.huge then
+--[[ 306: ]]    error("unexpected number value '" .. tostring(val) .. "'")
+--[[ 307: ]]  end
+--[[ 308: ]]  return string.format("%.14g", val)
+--[[ 309: ]]end
+--[[ 310: ]]
+--[[ 311: ]]
+--[[ 312: ]]local type_func_map = {
+--[[ 313: ]]  [ "nil"     ] = encode_nil,
+--[[ 314: ]]  [ "table"   ] = encode_table,
+--[[ 315: ]]  [ "string"  ] = encode_string,
+--[[ 316: ]]  [ "number"  ] = encode_number,
+--[[ 317: ]]  [ "boolean" ] = tostring,
+--[[ 318: ]]}
+--[[ 319: ]]
+--[[ 320: ]]
+--[[ 321: ]]encode = function(val, stack)
+--[[ 322: ]]  local t = type(val)
+--[[ 323: ]]  local f = type_func_map[t]
+--[[ 324: ]]  if f then
+--[[ 325: ]]    return f(val, stack)
+--[[ 326: ]]  end
+--[[ 327: ]]  error("unexpected type '" .. t .. "'")
+--[[ 328: ]]end
+--[[ 329: ]]
+--[[ 330: ]]
+--[[ 331: ]]function json.encode(val)
+--[[ 332: ]]  return ( encode(val) )
+--[[ 333: ]]end
+--[[ 334: ]]
+--[[ 335: ]]
+--[[ 336: ]]-------------------------------------------------------------------------------
+--[[ 337: ]]-- Decode
+--[[ 338: ]]-------------------------------------------------------------------------------
+--[[ 339: ]]
+--[[ 340: ]]local parse
+--[[ 341: ]]
+--[[ 342: ]]local function create_set(...)
+--[[ 343: ]]  local res = {}
+--[[ 344: ]]  for i = 1, select("#", ...) do
+--[[ 345: ]]    res[ select(i, ...) ] = true
+--[[ 346: ]]  end
+--[[ 347: ]]  return res
+--[[ 348: ]]end
+--[[ 349: ]]
+--[[ 350: ]]local space_chars   = create_set(" ", "\t", "\r", "\n")
+--[[ 351: ]]local delim_chars   = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
+--[[ 352: ]]local escape_chars  = create_set("\\", "/", '"', "b", "f", "n", "r", "t", "u")
+--[[ 353: ]]local literals      = create_set("true", "false", "null")
+--[[ 354: ]]
+--[[ 355: ]]local literal_map = {
+--[[ 356: ]]  [ "true"  ] = true,
+--[[ 357: ]]  [ "false" ] = false,
+--[[ 358: ]]  [ "null"  ] = nil,
+--[[ 359: ]]}
+--[[ 360: ]]
+--[[ 361: ]]
+--[[ 362: ]]local function next_char(str, idx, set, negate)
+--[[ 363: ]]  for i = idx, #str do
+--[[ 364: ]]    if set[str:sub(i, i)] ~= negate then
+--[[ 365: ]]      return i
+--[[ 366: ]]    end
+--[[ 367: ]]  end
+--[[ 368: ]]  return #str + 1
+--[[ 369: ]]end
+--[[ 370: ]]
+--[[ 371: ]]
+--[[ 372: ]]local function decode_error(str, idx, msg)
+--[[ 373: ]]  local line_count = 1
+--[[ 374: ]]  local col_count = 1
+--[[ 375: ]]  for i = 1, idx - 1 do
+--[[ 376: ]]    col_count = col_count + 1
+--[[ 377: ]]    if str:sub(i, i) == "\n" then
+--[[ 378: ]]      line_count = line_count + 1
+--[[ 379: ]]      col_count = 1
+--[[ 380: ]]    end
+--[[ 381: ]]  end
+--[[ 382: ]]  error( string.format("%s at line %d col %d", msg, line_count, col_count) )
+--[[ 383: ]]end
+--[[ 384: ]]
+--[[ 385: ]]
+--[[ 386: ]]local function codepoint_to_utf8(n)
+--[[ 387: ]]  -- http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=iws-appendixa
+--[[ 388: ]]  local f = math.floor
+--[[ 389: ]]  if n <= 0x7f then
+--[[ 390: ]]    return string.char(n)
+--[[ 391: ]]  elseif n <= 0x7ff then
+--[[ 392: ]]    return string.char(f(n / 64) + 192, n % 64 + 128)
+--[[ 393: ]]  elseif n <= 0xffff then
+--[[ 394: ]]    return string.char(f(n / 4096) + 224, f(n % 4096 / 64) + 128, n % 64 + 128)
+--[[ 395: ]]  elseif n <= 0x10ffff then
+--[[ 396: ]]    return string.char(f(n / 262144) + 240, f(n % 262144 / 4096) + 128,
+--[[ 397: ]]                       f(n % 4096 / 64) + 128, n % 64 + 128)
+--[[ 398: ]]  end
+--[[ 399: ]]  error( string.format("invalid unicode codepoint '%x'", n) )
+--[[ 400: ]]end
+--[[ 401: ]]
+--[[ 402: ]]
+--[[ 403: ]]local function parse_unicode_escape(s)
+--[[ 404: ]]  local n1 = tonumber( s:sub(1, 4),  16 )
+--[[ 405: ]]  local n2 = tonumber( s:sub(7, 10), 16 )
+--[[ 406: ]]   -- Surrogate pair?
+--[[ 407: ]]  if n2 then
+--[[ 408: ]]    return codepoint_to_utf8((n1 - 0xd800) * 0x400 + (n2 - 0xdc00) + 0x10000)
+--[[ 409: ]]  else
+--[[ 410: ]]    return codepoint_to_utf8(n1)
+--[[ 411: ]]  end
+--[[ 412: ]]end
+--[[ 413: ]]
+--[[ 414: ]]
+--[[ 415: ]]local function parse_string(str, i)
+--[[ 416: ]]  local res = ""
+--[[ 417: ]]  local j = i + 1
+--[[ 418: ]]  local k = j
+--[[ 419: ]]
+--[[ 420: ]]  while j <= #str do
+--[[ 421: ]]    local x = str:byte(j)
+--[[ 422: ]]
+--[[ 423: ]]    if x < 32 then
+--[[ 424: ]]      decode_error(str, j, "control character in string")
+--[[ 425: ]]
+--[[ 426: ]]    elseif x == 92 then -- `\`: Escape
+--[[ 427: ]]      res = res .. str:sub(k, j - 1)
+--[[ 428: ]]      j = j + 1
+--[[ 429: ]]      local c = str:sub(j, j)
+--[[ 430: ]]      if c == "u" then
+--[[ 431: ]]        local hex = str:match("^[dD][89aAbB]%x%x\\u%x%x%x%x", j + 1)
+--[[ 432: ]]                 or str:match("^%x%x%x%x", j + 1)
+--[[ 433: ]]                 or decode_error(str, j - 1, "invalid unicode escape in string")
+--[[ 434: ]]        res = res .. parse_unicode_escape(hex)
+--[[ 435: ]]        j = j + #hex
+--[[ 436: ]]      else
+--[[ 437: ]]        if not escape_chars[c] then
+--[[ 438: ]]          decode_error(str, j - 1, "invalid escape char '" .. c .. "' in string")
+--[[ 439: ]]        end
+--[[ 440: ]]        res = res .. escape_char_map_inv[c]
+--[[ 441: ]]      end
+--[[ 442: ]]      k = j + 1
+--[[ 443: ]]
+--[[ 444: ]]    elseif x == 34 then -- `"`: End of string
+--[[ 445: ]]      res = res .. str:sub(k, j - 1)
+--[[ 446: ]]      return res, j + 1
+--[[ 447: ]]    end
+--[[ 448: ]]
+--[[ 449: ]]    j = j + 1
+--[[ 450: ]]  end
+--[[ 451: ]]
+--[[ 452: ]]  decode_error(str, i, "expected closing quote for string")
+--[[ 453: ]]end
+--[[ 454: ]]
+--[[ 455: ]]
+--[[ 456: ]]local function parse_number(str, i)
+--[[ 457: ]]  local x = next_char(str, i, delim_chars)
+--[[ 458: ]]  local s = str:sub(i, x - 1)
+--[[ 459: ]]  local n = tonumber(s)
+--[[ 460: ]]  if not n then
+--[[ 461: ]]    decode_error(str, i, "invalid number '" .. s .. "'")
+--[[ 462: ]]  end
+--[[ 463: ]]  return n, x
+--[[ 464: ]]end
+--[[ 465: ]]
+--[[ 466: ]]
+--[[ 467: ]]local function parse_literal(str, i)
+--[[ 468: ]]  local x = next_char(str, i, delim_chars)
+--[[ 469: ]]  local word = str:sub(i, x - 1)
+--[[ 470: ]]  if not literals[word] then
+--[[ 471: ]]    decode_error(str, i, "invalid literal '" .. word .. "'")
+--[[ 472: ]]  end
+--[[ 473: ]]  return literal_map[word], x
+--[[ 474: ]]end
+--[[ 475: ]]
+--[[ 476: ]]
+--[[ 477: ]]local function parse_array(str, i)
+--[[ 478: ]]  local res = {}
+--[[ 479: ]]  local n = 1
+--[[ 480: ]]  i = i + 1
+--[[ 481: ]]  while 1 do
+--[[ 482: ]]    local x
+--[[ 483: ]]    i = next_char(str, i, space_chars, true)
+--[[ 484: ]]    -- Empty / end of array?
+--[[ 485: ]]    if str:sub(i, i) == "]" then
+--[[ 486: ]]      i = i + 1
+--[[ 487: ]]      break
+--[[ 488: ]]    end
+--[[ 489: ]]    -- Read token
+--[[ 490: ]]    x, i = parse(str, i)
+--[[ 491: ]]    res[n] = x
+--[[ 492: ]]    n = n + 1
+--[[ 493: ]]    -- Next token
+--[[ 494: ]]    i = next_char(str, i, space_chars, true)
+--[[ 495: ]]    local chr = str:sub(i, i)
+--[[ 496: ]]    i = i + 1
+--[[ 497: ]]    if chr == "]" then break end
+--[[ 498: ]]    if chr ~= "," then decode_error(str, i, "expected ']' or ','") end
+--[[ 499: ]]  end
+--[[ 500: ]]  return res, i
+--[[ 501: ]]end
+--[[ 502: ]]
+--[[ 503: ]]
+--[[ 504: ]]local function parse_object(str, i)
+--[[ 505: ]]  local res = {}
+--[[ 506: ]]  i = i + 1
+--[[ 507: ]]  while 1 do
+--[[ 508: ]]    local key, val
+--[[ 509: ]]    i = next_char(str, i, space_chars, true)
+--[[ 510: ]]    -- Empty / end of object?
+--[[ 511: ]]    if str:sub(i, i) == "}" then
+--[[ 512: ]]      i = i + 1
+--[[ 513: ]]      break
+--[[ 514: ]]    end
+--[[ 515: ]]    -- Read key
+--[[ 516: ]]    if str:sub(i, i) ~= '"' then
+--[[ 517: ]]      decode_error(str, i, "expected string for key")
+--[[ 518: ]]    end
+--[[ 519: ]]    key, i = parse(str, i)
+--[[ 520: ]]    -- Read ':' delimiter
+--[[ 521: ]]    i = next_char(str, i, space_chars, true)
+--[[ 522: ]]    if str:sub(i, i) ~= ":" then
+--[[ 523: ]]      decode_error(str, i, "expected ':' after key")
+--[[ 524: ]]    end
+--[[ 525: ]]    i = next_char(str, i + 1, space_chars, true)
+--[[ 526: ]]    -- Read value
+--[[ 527: ]]    val, i = parse(str, i)
+--[[ 528: ]]    -- Set
+--[[ 529: ]]    res[key] = val
+--[[ 530: ]]    -- Next token
+--[[ 531: ]]    i = next_char(str, i, space_chars, true)
+--[[ 532: ]]    local chr = str:sub(i, i)
+--[[ 533: ]]    i = i + 1
+--[[ 534: ]]    if chr == "}" then break end
+--[[ 535: ]]    if chr ~= "," then decode_error(str, i, "expected '}' or ','") end
+--[[ 536: ]]  end
+--[[ 537: ]]  return res, i
+--[[ 538: ]]end
+--[[ 539: ]]
+--[[ 540: ]]
+--[[ 541: ]]local char_func_map = {
+--[[ 542: ]]  [ '"' ] = parse_string,
+--[[ 543: ]]  [ "0" ] = parse_number,
+--[[ 544: ]]  [ "1" ] = parse_number,
+--[[ 545: ]]  [ "2" ] = parse_number,
+--[[ 546: ]]  [ "3" ] = parse_number,
+--[[ 547: ]]  [ "4" ] = parse_number,
+--[[ 548: ]]  [ "5" ] = parse_number,
+--[[ 549: ]]  [ "6" ] = parse_number,
+--[[ 550: ]]  [ "7" ] = parse_number,
+--[[ 551: ]]  [ "8" ] = parse_number,
+--[[ 552: ]]  [ "9" ] = parse_number,
+--[[ 553: ]]  [ "-" ] = parse_number,
+--[[ 554: ]]  [ "t" ] = parse_literal,
+--[[ 555: ]]  [ "f" ] = parse_literal,
+--[[ 556: ]]  [ "n" ] = parse_literal,
+--[[ 557: ]]  [ "[" ] = parse_array,
+--[[ 558: ]]  [ "{" ] = parse_object,
+--[[ 559: ]]}
+--[[ 560: ]]
+--[[ 561: ]]
+--[[ 562: ]]parse = function(str, idx)
+--[[ 563: ]]  local chr = str:sub(idx, idx)
+--[[ 564: ]]  local f = char_func_map[chr]
+--[[ 565: ]]  if f then
+--[[ 566: ]]    return f(str, idx)
+--[[ 567: ]]  end
+--[[ 568: ]]  decode_error(str, idx, "unexpected character '" .. chr .. "'")
+--[[ 569: ]]end
+--[[ 570: ]]
+--[[ 571: ]]
+--[[ 572: ]]function json.decode(str)
+--[[ 573: ]]  if type(str) ~= "string" then
+--[[ 574: ]]    error("expected argument of type string, got " .. type(str))
+--[[ 575: ]]  end
+--[[ 576: ]]  local res, idx = parse(str, next_char(str, 1, space_chars, true))
+--[[ 577: ]]  idx = next_char(str, idx, space_chars, true)
+--[[ 578: ]]  if idx <= #str then
+--[[ 579: ]]    decode_error(str, idx, "trailing garbage")
+--[[ 580: ]]  end
+--[[ 581: ]]  return res
+--[[ 582: ]]end
+--[[ 583: ]]
+--[[ 584: ]]
+--[[ 585: ]]local liveload = {}
+--[[ 586: ]]
+--[[ 587: ]]-- Node will insert the libs here!
+--[[ 588: ]]
+--[[ 589: ]]if fs.exists("/eget/libs/json.lua") == false then
+--[[ 590: ]]    writeAbs("/eget/libs/json.lua", download(repoURL .. "/libs/json.lua"))
+--[[ 591: ]]end
+--[[ 592: ]]-- REMOVED REQUIRE local json = require "/eget/libs/json"
+--[[ 593: ]]
+--[[ 594: ]]if outdated == true or any(args, "-fa") == true or fs.exists("/eget/eget.lua") == false or
+--[[ 595: ]]    fs.exists("/eget/libs/egetlib.lua") == false then
+--[[ 596: ]]    --term.clear()
+--[[ 597: ]]    if any(args, "-fa") == true then
+--[[ 598: ]]        if outdated then
+--[[ 599: ]]            print("Updating ..")
+--[[ 600: ]]        else
+--[[ 601: ]]            print("Forcing update ..")
+--[[ 602: ]]        end
+--[[ 603: ]]    end
+--[[ 604: ]]
+--[[ 605: ]]    installLib.writeAbs("/eget/libs/installLib.lua",
+--[[ 606: ]]        installLib.download(repoURL .. "/libs/egetlib.lua"))
+--[[ 607: ]]    installLib.writeAbs("/eget/libs/helper.lua",
+--[[ 608: ]]        installLib.download(repoURL .. "/libs/helper.lua"))
+--[[ 609: ]]    installLib.writeAbs("/eget/eget.lua",
+--[[ 610: ]]        installLib.download(repoURL .. "/eget.lua"))
+--[[ 611: ]]    installLib.writeAbs("/eget.lua",
+--[[ 612: ]]        installLib.download(repoURL .. "/eget.lua"))
+--[[ 613: ]]
+--[[ 614: ]]    if any(args, "-fa") == false then
+--[[ 615: ]]        print(".. finished!")
+--[[ 616: ]]        print("eGet v" .. version .. " alive and well!")
+--[[ 617: ]]    else
+--[[ 618: ]]        print("Done\n")
+--[[ 619: ]]    end
+--[[ 620: ]]end
+--[[ 621: ]]

@@ -1,9 +1,11 @@
 -- eget live count --from=back --to=front
 local helper = require "/apps/helperLib/helperLib"
+local debug = require "/apps/debugLib/debugLib"
+local json = require("/eget/libs/json")
 local args = { ... }
 local fromSide = "back"
 local toSide = "right"
-local toMonitor = "top"
+local toMonitor = nil
 
 function startsWith(String, Start)
     return string.sub(String, 1, string.len(Start)) == Start
@@ -13,20 +15,40 @@ for index, value in ipairs(args) do
     --print(value)
     if startsWith(value, "--from=") == true then
         fromSide = string.sub(value, string.len("--from= "))
+        
     end
     if startsWith(value, "--to=") == true then
         toSide = string.sub(value, string.len("--to= "))
+        
     end
     if startsWith(value, "--monitor=") == true then
         toMonitor = string.sub(value, string.len("--monitor= "))
     end
 end
 
-print("FROM " .. fromSide .. " TO " .. toSide .. " INTO MONITOR " .. toMonitor)
+print("FROM " .. fromSide .. " TO " .. toSide .. " INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
 
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
-local monitor = peripheral.wrap(toMonitor)
+
+if peripheral.isPresent(fromSide)~=true and peripheral.hasType(from,"inventory")==false then
+    error("From-Peripheral is not present! -- Exiting")
+end
+if peripheral.isPresent(toSide)~=true then
+    error("To-Peripheral is not present! -- Exiting")
+end
+if peripheral.hasType(from,"inventory")==false then
+    error("From-Preipheral is not an inventory! -- Exiting")
+end
+if peripheral.hasType(to,"inventory")==false then
+    error("To-Preipheral is not an inventory! -- Exiting")
+end
+
+local monitor = term.current()
+if toMonitor~=nil then
+    local monitor = peripheral.wrap(toMonitor)
+    monitor.setTextScale(0.5)
+end
 local version = 0
 if fs.exists("/apps/count/version") then
     local file = fs.open("/apps/count/version", "r")
@@ -39,7 +61,7 @@ print("Terminal Redirect! (Build "..version..")")
 term.redirect(monitor)
 print("Terminal Redirect! 2")
 monitor.clear()
-monitor.setTextScale(0.5)
+
 monitor.write("HELLO")
 monitor.setBackgroundColor(colors.black)
 local movedTable = {}
@@ -145,6 +167,7 @@ while true do
             helper.tableAddToValue(movedTable,itemName, pushed)
             helper.tableAddToValue(movedSinceStartTable,itemName, pushed)
             helper.tableAddToValue(movedTableLastUpdate,itemName, pushed)
+            sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
     sleep(0.1)
@@ -199,8 +222,10 @@ while true do
 
     updateCycle = updateCycle + 1
     if updateCycle % 10 == 9 then
-        local monitor = peripheral.wrap(toMonitor)
-        term.redirect(monitor)
+        if toMonitor~=nil then
+            local monitor = peripheral.wrap(toMonitor)
+            term.redirect(monitor)
+        end
 
         local file = fs.open("state.count.db", "w")
         file.write(textutils.serialize(movedTable), { compact = true })

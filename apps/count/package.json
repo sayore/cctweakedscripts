@@ -1,5 +1,6 @@
 {
     "dependencies": {
-        "helperLib":"latest"
+        "helperLib":"latest",
+        "debugLib":"latest"
     }
 }

@@ -62,4 +62,15 @@ function tableAddToValue(table, key, value)
     end
 end
 
+function stop()
+    -- Send a signal over Websocket to stop the program
+      local ws = require("websocket")
+      local ws, err = ws.connect("ws://localhost:8080")
+      if not ws then
+        print("Could not connect to server")
+        print(err)
+        return
+      end
+end
+
 return {dump = dump, explode=explode, tableAddToValue = tableAddToValue}
