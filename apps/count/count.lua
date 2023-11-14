@@ -28,7 +28,9 @@ for index, value in ipairs(args) do
 end
 
 print("FROM " .. fromSide .. " TO " .. toSide .. " INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
-
+print("TO " .. toSide .. " INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
+print("INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
+sleep(2000)
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
 
