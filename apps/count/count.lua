@@ -169,7 +169,7 @@ while true do
             helper.tableAddToValue(movedTable,itemName, pushed)
             helper.tableAddToValue(movedSinceStartTable,itemName, pushed)
             helper.tableAddToValue(movedTableLastUpdate,itemName, pushed)
-            sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
+            --sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
     print("\nSend Data to WS")
