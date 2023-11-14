@@ -104,5 +104,5 @@ wss.on("connection", (ws,req) => {
 });
 
 server.listen(1380, function() {
-    console.log(`uwu combo server on 80`);
+    console.log(`uwu combo server on 1380`);
 });
