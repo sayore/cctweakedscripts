@@ -27,10 +27,19 @@ for index, value in ipairs(args) do
     end
 end
 
-print("FROM " .. fromSide .. " TO " .. toSide .. " INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
-print("TO " .. toSide .. " INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
+term.clear()
+term.setCursorPos(1, 3)
+print("Runtime Info")
+print("FROM " .. fromSide .. " -> " .. toSide)
 print("INTO MONITOR " .. (toMonitor==nil and "No Monitor" or toMonitor))
-sleep(2000)
+
+local waitTime = 3.5
+while waitTime >= 0 do
+    term.setCursorPos(1, 1)
+    print("Starting in " .. waitTime .. "s")
+    sleep(0.5)
+    waitTime=waitTime-0.5
+end
 local from = peripheral.wrap(fromSide)
 local to = peripheral.wrap(toSide)
 
@@ -51,6 +60,8 @@ local monitor = term.current()
 if toMonitor~=nil then
     local monitor = peripheral.wrap(toMonitor)
     monitor.setTextScale(0.5)
+    print("Bound Monitor {"..monitor.."}["..toMonitor.."]")
+    sleep(1)
 end
 local version = 0
 if fs.exists("/apps/count/version") then
