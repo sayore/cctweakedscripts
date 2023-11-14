@@ -44,7 +44,7 @@ app.get('/eget.lua', (req, res, next) => {
 })
 
 app.get('/install.lua', (req, res, next) => {
-    res.setHeader('Content-Type','text/plain');
+    res.setHeader('Content-Type','text/plain; charset=utf-8');
 
     let toSend = loadLibsBlindly("./libs/");
     toSend+=removeRequire(readFileSync(path.join(__dirname,"./install.lua"),{encoding:'utf-8'}))
@@ -55,13 +55,13 @@ app.get('/install.lua', (req, res, next) => {
 
 app.use('/apps', express.static('apps'))
 app.use('/libs', express.static('libs'))
-app.use('/', express.static('static'))
+//app.use('/', express.static('static'))
 
-app.all('/*',async (req, res, next) => {
-    res.send(`{"msg":"Fuck off m8y"}`)
-    res.statusCode=404
-    res.end()
-})
+//app.all('/*',async (req, res, next) => {
+//    res.send(`{"msg":"Fuck off m8y"}`)
+//    res.statusCode=404
+//    res.end()
+//})
 
 
 
@@ -84,7 +84,7 @@ function loadLibsBlindly(orgRelativePath) {
 function addLineNumbers(str) {
     var split = str.split('\n');
     var retval=""
-    split.forEach((v,i)=>retval+="--[[ "+i+": ]]"+v)
+    split.forEach((v,i)=>retval+="\n--[[ "+i+": ]]"+v)
     return retval
 }
 
@@ -94,7 +94,7 @@ function removeRequire(str) {
             return "-- REMOVED REQUIRE " + v;
         else
             return v;
-    }).join('\n')
+    }).join('\r\n')
 }
 
 function removeModuleReturn(str) {

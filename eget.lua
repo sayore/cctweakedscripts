@@ -1,4 +1,5 @@
 --# wget run http://cozycatcrew.de:1380/install.lua
+--# wget run http://localhost:1380/install.lua
 --# wget run http://princess-sayore.ddns.net/install.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
 --local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
