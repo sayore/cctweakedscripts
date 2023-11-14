@@ -62,7 +62,7 @@ term.redirect(monitor)
 print("Terminal Redirect! 2")
 monitor.clear()
 
-monitor.write("HELLO")
+monitor.write("HELLO\n")
 monitor.setBackgroundColor(colors.black)
 local movedTable = {}
 local movedSinceStartTable = {}
