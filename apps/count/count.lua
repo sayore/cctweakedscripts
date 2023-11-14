@@ -176,9 +176,7 @@ local start = os.clock()
 local updateCycle = 0
 while true do
     local now = os.clock()
-    if debug then print("\nRead Clock") end
     table.sort(movedTable)
-    if debug then print("\nSorted Table") end
 
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
@@ -188,7 +186,7 @@ while true do
             helper.tableAddToValue(movedTable,itemName, pushed)
             helper.tableAddToValue(movedSinceStartTable,itemName, pushed)
             helper.tableAddToValue(movedTableLastUpdate,itemName, pushed)
-            sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
+            --sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
 
@@ -239,8 +237,8 @@ while true do
         print ""
     end
     sleep(0.33)
-    print("")
-    print()
+    --print("")
+    --print()
 
     updateCycle = updateCycle + 1
     if updateCycle % 10 == 9 then
