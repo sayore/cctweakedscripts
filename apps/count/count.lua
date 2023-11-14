@@ -5,6 +5,7 @@ local json = require("/eget/libs/json")
 local args = { ... }
 local fromSide = "back"
 local toSide = "right"
+local debug=false
 local toMonitor = nil
 
 function startsWith(String, Start)
@@ -158,9 +159,9 @@ local start = os.clock()
 local updateCycle = 0
 while true do
     local now = os.clock()
-    print("\nRead Clock")
-    table.sort(movedTable);
-    print("\nSorted Table")
+    (debug and print("\nRead Clock") or 0)
+    table.sort(movedTable)
+    (debug and print("\nSorted Table") or 0)
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
         if itemdetail ~= nil then
@@ -172,7 +173,7 @@ while true do
             sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
-    print("\nSend Data to WS")
+
     sleep(0.1)
     term.clear()
     monitor.setCursorPos(1, 1)
