@@ -178,9 +178,9 @@ function pairsByKeys (t, f)
   end
 function disp_time(time)
     local days = math.floor(time/86400)
-    local hours = math.floor(mod(time, 86400)/3600)
-    local minutes = math.floor(mod(time,3600)/60)
-    local seconds = math.floor(mod(time,60))
+    local hours = math.floor((time% 86400)/3600)
+    local minutes = math.floor((time%3600)/60)
+    local seconds = math.floor((time%60))
     return string.format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
 end
   
