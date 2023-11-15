@@ -225,7 +225,7 @@ while true do
     term.clear()
     monitor.setCursorPos(1, 1)
     term.setCursorPos(1, 1)
-    print("Watching Items ["..padRight(string.rep("#",math.floor(updateCycle%20/2)), 10, " ").."] ("..string.format("%.2f",((20*0.25)-updateCycle%20*0.25)).."s | Mode "..(math.floor(updateCycle%60/20)+1).."/3)")
+    print("Watching Items ["..padRight(string.rep("#",math.floor(updateCycle%20/2)), 10, " ").."] ".. (optionDetailed and "" or "("..string.format("%.2f",((20*0.25)-updateCycle%20*0.25)).."s | Mode "..(math.floor(updateCycle%60/20)+1).."/3)"))
 
     
     local entry = 0
@@ -261,19 +261,17 @@ while true do
         end
         if movedSinceStartTable[itemName]~=nil and movedSinceStartTable[itemName] > 0.001 then
             if optionDetailed then
-                if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
-                    printWithFormat(isSpecial ..
-                        padLeft(itemName, max_ln, " ") ..
-                        "&0 " ..
-                        padLeft(amountMovedEver, 6, " ").. " "
-                        .. moreThanBefore)
-                    print ""
-                    printWithFormat(padLeft("", max_ln, " ") ..
-                        padLeft(unit_format(perSecondSinceStart), 7, " ").."p/s".. " " ..
-                        padLeft(unit_format(perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
-                        padLeft(unit_format(perSecondSinceStart * 3600), 7, " ") .."p/h")
-
-                end
+                
+                printWithFormat(isSpecial ..
+                    padLeft(itemName, max_ln, " ") ..
+                    "&0 " ..
+                    padLeft(amountMovedEver, 6, " ").. " "
+                    .. moreThanBefore)
+                print ""
+                printWithFormat(padLeft("", max_ln, " ") ..
+                    padLeft(unit_format(perSecondSinceStart), 7, " ").."p/s".. " " ..
+                    padLeft(unit_format(perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
+                    padLeft(unit_format(perSecondSinceStart * 3600), 7, " ") .."p/h")
             else
                 if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
                     printWithFormat(isSpecial ..
@@ -299,12 +297,12 @@ while true do
             end
             
             if optionShowDepot==true and stocked~="" then
+                print ""
                 term.setBackgroundColor(colors.orange)
                 term.setTextColor(colors.white)
                 print(stocked)
                 term.setBackgroundColor(colors.black)
                 term.setTextColor(colors.white)
-                print ""
             end
             printWithFormat("&0")
             print ""
