@@ -245,7 +245,7 @@ while true do
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
             if currentlyLeftInChestTable[itemName] ~= 0 and currentlyLeftInChestTable[itemName]~=nil then
-                stocked = "&0 Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps) "
+                stocked = " Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps) "
             end
         end
         movedTableLastUpdate[itemName] = 0
@@ -298,7 +298,7 @@ while true do
             if optionShowDepot==true and stocked~="" then
                 print ""
                 term.setBackgroundColor(colors.orange)
-                term.setTextColor(colors.white)
+                term.setTextColor(colors.black)
                 print(stocked)
                 term.setBackgroundColor(colors.black)
                 term.setTextColor(colors.white)
