@@ -194,7 +194,7 @@ while true do
     term.clear()
     monitor.setCursorPos(1, 1)
     term.setCursorPos(1, 1)
-    print("Watching Items ["..padLeft("█"*(updateCycle%20), 20, " ").."]")
+    print("Watching Items ["..padLeft(string.rep("█",updateCycle%20), 20, " ").."]")
 
     
     local entry = 0
