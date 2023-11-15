@@ -223,7 +223,7 @@ while true do
         if specialItems[itemName] ~= nil then
             isSpecial = specialItems[itemName]
         end
-        if movedSinceStartTable[itemName] ~= 0 then
+        if movedSinceStartTable[itemName] > 0.01 then
             if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
             printWithFormat(isSpecial ..
                 padLeft(itemName, max_ln, " ") ..
