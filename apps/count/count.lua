@@ -253,7 +253,7 @@ while true do
                     printWithFormat(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
-                        padLeft(amountMovedEver, 6, " ")
+                        padLeft(amountMovedEver, 6, " ")..
                         "p/s" .. moreThanBefore)
                     print ""
                     printWithFormat(isSpecial .. "   " ..
@@ -288,10 +288,10 @@ while true do
             
             if optionShowDepot==true then
                 print ""
-                printWithFormat(isSpecial ..
-                    stocked)
+                printWithFormat(stocked)
             end
-            print "&0"
+            printWithFormat("&0")
+            print ""
         end
         --printWithFormat(isSpecial ..
         --    padLeft("|--", 5, " ") ..
