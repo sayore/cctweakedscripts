@@ -177,11 +177,11 @@ function pairsByKeys (t, f)
     return iter
   end
 function disp_time(time)
-    local days = floor(time/86400)
-    local hours = floor(mod(time, 86400)/3600)
-    local minutes = floor(mod(time,3600)/60)
-    local seconds = floor(mod(time,60))
-    return format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
+    local days = math.floor(time/86400)
+    local hours = math.floor(mod(time, 86400)/3600)
+    local minutes = math.floor(mod(time,3600)/60)
+    local seconds = math.floor(mod(time,60))
+    return string.format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
 end
   
 local max_ln = 24
