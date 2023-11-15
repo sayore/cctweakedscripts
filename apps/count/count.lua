@@ -73,11 +73,10 @@ if fs.exists("/apps/count/version") then
     print("Version file exists!")
     file.close()
 end
-print("Arguments: ",dump(args))
-print("Terminal Redirect! (Build "..version..")")
+--print("Arguments: ",dump(args))
+--print("Terminal Redirect! (Build "..version..")")
+local monitor = peripheral.wrap(toMonitor)
 term.redirect(monitor)
-print("Terminal Redirect! 2")
-monitor.clear()
 
 monitor.setBackgroundColor(colors.black)
 local movedTable = {}
@@ -85,15 +84,15 @@ local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
 local currentlyLeftInChestTable = {}
 
-local waitTime = 1
-while waitTime >= 0 do
-    term.setCursorPos(1, 1)
-    print("Starting in         ")
-    term.setCursorPos(1, 1)
-    print("Starting in " .. waitTime .. "s")
-    sleep(0.02)
-    waitTime=waitTime-0.02
-end
+--local waitTime = 1
+--while waitTime >= 0 do
+--    term.setCursorPos(1, 1)
+--    print("Starting in         ")
+--    term.setCursorPos(1, 1)
+--    print("Starting in " .. waitTime .. "s")
+--    sleep(0.02)
+--    waitTime=waitTime-0.02
+--end
 
 print("\nStart Cycle") --eget live count -fa
 if fs.exists("state.count.db") then
