@@ -76,14 +76,14 @@ local movedTable = {}
 local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
 
-local waitTime = 5
+local waitTime = 1
 while waitTime >= 0 do
     term.setCursorPos(1, 1)
     print("Starting in         ")
     term.setCursorPos(1, 1)
     print("Starting in " .. waitTime .. "s")
-    sleep(0.2)
-    waitTime=waitTime-0.2
+    sleep(0.02)
+    waitTime=waitTime-0.02
 end
 
 print("\nStart Cycle") --eget live count -fa
@@ -223,7 +223,7 @@ while true do
         if specialItems[itemName] ~= nil then
             isSpecial = specialItems[itemName]
         end
-        if movedSinceStartTable[itemName] > 0.01 then
+        if movedSinceStartTable[itemName]~=nil and movedSinceStartTable[itemName] > 0.001 then
             if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
             printWithFormat(isSpecial ..
                 padLeft(itemName, max_ln, " ") ..
