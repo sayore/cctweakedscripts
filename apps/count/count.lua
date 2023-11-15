@@ -195,7 +195,7 @@ while true do
     term.clear()
     monitor.setCursorPos(1, 1)
     term.setCursorPos(1, 1)
-    print("Watching Items ["..padLeft(string.rep("█",updateCycle%20), 20, " ").."]")
+    print("Watching Items ["..padLeft(string.rep("█",updateCycle%20), 20, " ").."] ("..(updateCycle%20*0.25).."s | Mode "..(math.floor(updateCycle%60/20)+1).."/3)")
 
     
     local entry = 0
@@ -223,21 +223,21 @@ while true do
         if specialItems[itemName] ~= nil then
             isSpecial = specialItems[itemName]
         end
-        if (updateCycle%60)<=20 and (updateCycle%40)<=0 then
+        if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
             padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
             "p/s" .. moreThanBefore)
         end
-        if (updateCycle%40)<=40 and (updateCycle%40)<20 then
+        if (updateCycle%60)<=40 and (updateCycle%60)>20 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
             padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
             "p/min" .. moreThanBefore)
         end
-        if (updateCycle%60)>=60 and (updateCycle%40)<40 then
+        if (updateCycle%60)<=60 and (updateCycle%60)>40 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
