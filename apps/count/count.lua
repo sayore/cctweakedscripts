@@ -176,7 +176,14 @@ function pairsByKeys (t, f)
     end
     return iter
   end
-
+function disp_time(time)
+    local days = floor(time/86400)
+    local hours = floor(mod(time, 86400)/3600)
+    local minutes = floor(mod(time,3600)/60)
+    local seconds = floor(mod(time,60))
+    return format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
+end
+  
 local max_ln = 24
 local start = os.clock()
 local updateCycle = 0
@@ -224,10 +231,10 @@ while true do
             moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
-            stocked = "Stocked Time: ".. math.floor(currentlyLeftInChestTable[itemName]/perSecondSinceStart/3600)..":"..math.floor(currentlyLeftInChestTable[itemName]/perSecondSinceStart/60) ..":".. currentlyLeftInChestTable[itemName]/perSecondSinceStart%60
+            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]) .. " ("..currentlyLeftInChestTable[itemName].."pcs left using "..perSecondSinceStart.." per second)"
         end
         movedTableLastUpdate[itemName] = 0
-        local isSpecial = "&7"
+        local isSpecial = "&0"
         for k2, v2 in pairs(specialWords) do
             if string.find(itemName, k2) then
                 isSpecial = v2
