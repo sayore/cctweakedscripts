@@ -195,7 +195,7 @@ while true do
     term.clear()
     monitor.setCursorPos(1, 1)
     term.setCursorPos(1, 1)
-    print("Watching Items ["..padLeft(string.rep("█",updateCycle%20), 20, " ").."] ("..(updateCycle%20*0.25).."s | Mode "..(math.floor(updateCycle%60/20)+1).."/3)")
+    print("Watching Items ["..padLeft(string.rep("█",updateCycle%20), 20, " ").."] ("..string.format("%.2f",((20*0.25)-updateCycle%20*0.25)).."s | Mode "..(math.floor(updateCycle%60/20)+1).."/3)")
 
     
     local entry = 0
