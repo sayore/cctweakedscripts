@@ -5,6 +5,7 @@ local json = require("/eget/libs/json")
 local args = { ... }
 local fromSide = "back"
 local toSide = "right"
+local optionShowDepot = false
 local debug=false
 local toMonitor = nil
 
@@ -24,6 +25,9 @@ for index, value in ipairs(args) do
     end
     if startsWith(value, "--monitor=") == true then
         toMonitor = string.sub(value, string.len("--monitor= "))
+    end
+    if startsWith(value, "--show-depot") == true then
+        optionShowDepot=true
     end
 end
 
@@ -75,6 +79,7 @@ monitor.setBackgroundColor(colors.black)
 local movedTable = {}
 local movedSinceStartTable = {}
 local movedTableLastUpdate = {}
+local currentlyLeftInChestTable = {}
 
 local waitTime = 1
 while waitTime >= 0 do
@@ -178,7 +183,7 @@ local updateCycle = 0
 while true do
     local now = os.clock()
     table.sort(movedTable)
-
+    currentlyLeftInChestTable = {}
     for i = 1, from.size() do
         local itemdetail = from.getItemDetail(i)
         if itemdetail ~= nil then
@@ -187,6 +192,10 @@ while true do
             helper.tableAddToValue(movedTable,itemName, pushed)
             helper.tableAddToValue(movedSinceStartTable,itemName, pushed)
             helper.tableAddToValue(movedTableLastUpdate,itemName, pushed)
+            local itemdetail = from.getItemDetail(i)
+            if itemdetail ~= nil then
+                helper.tableAddToValue(currentlyLeftInChestTable,itemName, itemdetail.count)
+            end
             --sendDebugToWS(json.encode({type="sendCountData",data=movedTable}))
         end
     end
@@ -207,11 +216,15 @@ while true do
         end
         local moreThanBefore = ""
         local moreThanAtStart = ""
+        local stocked = ""
         if movedTableLastUpdate[itemName] ~= nil and movedTableLastUpdate[itemName] ~= 0 then
             moreThanBefore = " (+ " .. movedTableLastUpdate[itemName] .. " Pcs)"
         end
         if movedSinceStartTable[itemName] ~= nil and movedSinceStartTable[itemName] ~= 0 then
             moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
+        end
+        if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
+            stocked = "Stocked Time: ".. math.floor(currentlyLeftInChestTable[itemName]/perSecondSinceStart/3600)..":"..math.floor(currentlyLeftInChestTable[itemName]/perSecondSinceStart/60) ..":".. currentlyLeftInChestTable[itemName]/perSecondSinceStart%60
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&7"
@@ -244,6 +257,10 @@ while true do
                 "&0 " ..
                 padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
                 "p/h" .. moreThanBefore)
+            end
+            if optionShowDepot==true then
+                printWithFormat(isSpecial ..
+                    stocked)
             end
             print ""
         end
