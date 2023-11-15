@@ -236,7 +236,7 @@ while true do
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
             if currentlyLeftInChestTable[itemName] ~= 0 and currentlyLeftInChestTable[itemName]~=nil then
-                stocked = " Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps) "
+                stocked = "&0 Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps) "
             end
         end
         movedTableLastUpdate[itemName] = 0
@@ -259,8 +259,8 @@ while true do
                         .. moreThanBefore)
                     print ""
                     printWithFormat(padLeft("", max_ln, " ") ..
-                        padLeft(string.format("%.2f", perSecondSinceStart), 7, " ").."p/s".. "   " ..
-                        padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") .."p/min".. "   " ..
+                        padLeft(string.format("%.2f", perSecondSinceStart), 7, " ").."p/s".. " " ..
+                        padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
                         padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") .."p/h")
 
                 end
@@ -289,10 +289,13 @@ while true do
             end
             
             if optionShowDepot==true and stocked~="" then
-                print ""
                 term.setBackgroundColor(colors.orange)
-                printWithFormat(stocked)
+                term.setTextColor(colors.white)
+                term.set(colors.orange)
+                print(stocked)
                 term.setBackgroundColor(colors.black)
+                term.setTextColor(colors.white)
+                print ""
             end
             printWithFormat("&0")
             print ""
@@ -313,7 +316,7 @@ while true do
 
     updateCycle = updateCycle + 1
     
-    if updateCycle % 10 == 9 then
+    if updateCycle % 10 == 2 then
         if toMonitor~=nil then
             local monitor = peripheral.wrap(toMonitor)
             term.redirect(monitor)
