@@ -259,10 +259,11 @@ while true do
                 "p/h" .. moreThanBefore)
             end
             if optionShowDepot==true then
+                print ""
                 printWithFormat(isSpecial ..
                     stocked)
             end
-            print ""
+            print "&0"
         end
         --printWithFormat(isSpecial ..
         --    padLeft("|--", 5, " ") ..
