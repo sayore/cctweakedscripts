@@ -190,7 +190,7 @@ end
 
 function unit_format(value)
     if value <1000 then
-        return value
+        return string.format("%.2f",value)
     end
     if value>=1000 and value<=1000000 then
         return string.format("%.2f",(value / 1000)).."k"
