@@ -6,6 +6,7 @@ local args = { ... }
 local fromSide = "back"
 local toSide = "right"
 local optionShowDepot = false
+local optionDetailed = false
 local debug=false
 local toMonitor = nil
 
@@ -28,6 +29,9 @@ for index, value in ipairs(args) do
     end
     if startsWith(value, "--show-depot") == true then
         optionShowDepot=true
+    end
+    if startsWith(value, "--detailed") == true then
+        optionDetailed=true
     end
 end
 
@@ -184,7 +188,7 @@ function disp_time(time)
     return string.format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
 end
   
-local max_ln = 24
+local max_ln = 12
 local start = os.clock()
 local updateCycle = 0
 while true do
@@ -231,7 +235,7 @@ while true do
             moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
-            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."pcs left using "..string.format("%.2f", perSecondSinceStart).." per second)"
+            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps)"
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&0"
@@ -244,27 +248,44 @@ while true do
             isSpecial = specialItems[itemName]
         end
         if movedSinceStartTable[itemName]~=nil and movedSinceStartTable[itemName] > 0.001 then
-            if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
-            printWithFormat(isSpecial ..
-                padLeft(itemName, max_ln, " ") ..
-                "&0 " ..
-                padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
-                "p/s" .. moreThanBefore)
+            if optionDetailed then
+                if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
+                    printWithFormat(isSpecial ..
+                        padLeft(itemName, max_ln, " ") ..
+                        "&0 " ..
+                        padLeft(amountMovedEver, 6, " ")
+                        "p/s" .. moreThanBefore)
+                    print ""
+                    printWithFormat(isSpecial .. "   " ..
+                        padLeft(string.format("%.2f", perSecondSinceStart), 7, " ").."p/s".. "   " ..
+                        padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") .."p/min".. "   " ..
+                        padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") .."p/h")
+
+                end
+            else
+                if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
+                    printWithFormat(isSpecial ..
+                        padLeft(itemName, max_ln, " ") ..
+                        "&0 " ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
+                        "p/s" .. moreThanBefore)
+                end
+                if (updateCycle%60)<=40 and (updateCycle%60)>20 then
+                    printWithFormat(isSpecial ..
+                        padLeft(itemName, max_ln, " ") ..
+                        "&0 " ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
+                        "p/min" .. moreThanBefore)
+                end
+                if (updateCycle%60)<=60 and (updateCycle%60)>40 then
+                    printWithFormat(isSpecial ..
+                        padLeft(itemName, max_ln, " ") ..
+                        "&0 " ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
+                        "p/h" .. moreThanBefore)
+                end
             end
-            if (updateCycle%60)<=40 and (updateCycle%60)>20 then
-            printWithFormat(isSpecial ..
-                padLeft(itemName, max_ln, " ") ..
-                "&0 " ..
-                padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
-                "p/min" .. moreThanBefore)
-            end
-            if (updateCycle%60)<=60 and (updateCycle%60)>40 then
-            printWithFormat(isSpecial ..
-                padLeft(itemName, max_ln, " ") ..
-                "&0 " ..
-                padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
-                "p/h" .. moreThanBefore)
-            end
+            
             if optionShowDepot==true then
                 print ""
                 printWithFormat(isSpecial ..
