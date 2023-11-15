@@ -187,6 +187,16 @@ function disp_time(time)
     local seconds = math.floor((time%60))
     return string.format("%d:%02d:%02d:%02d",days,hours,minutes,seconds)
 end
+
+function unit_format(value)
+    if value <1000 then
+        return value
+    end
+    if value>=1000 and value<=1000000 then
+        return string.format("%.2f",(value / 1000)).."k"
+    end
+    return string.format("%.2f",(value / 1000000)).."m"
+end
   
 local max_ln = 12
 local start = os.clock()
@@ -259,9 +269,9 @@ while true do
                         .. moreThanBefore)
                     print ""
                     printWithFormat(padLeft("", max_ln, " ") ..
-                        padLeft(string.format("%.2f", perSecondSinceStart), 7, " ").."p/s".. " " ..
-                        padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
-                        padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") .."p/h")
+                        padLeft(unit_format(perSecondSinceStart), 7, " ").."p/s".. " " ..
+                        padLeft(unit_format(perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
+                        padLeft(unit_format(perSecondSinceStart * 3600), 7, " ") .."p/h")
 
                 end
             else
@@ -269,21 +279,21 @@ while true do
                     printWithFormat(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
-                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format(perSecondSinceStart), 7, " ") ..
                         "p/s" .. moreThanBefore)
                 end
                 if (updateCycle%60)<=40 and (updateCycle%60)>20 then
                     printWithFormat(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
-                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format(perSecondSinceStart * 60), 7, " ") ..
                         "p/min" .. moreThanBefore)
                 end
                 if (updateCycle%60)<=60 and (updateCycle%60)>40 then
                     printWithFormat(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
-                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
+                        padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format( perSecondSinceStart * 3600), 7, " ") ..
                         "p/h" .. moreThanBefore)
                 end
             end
