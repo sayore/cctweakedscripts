@@ -193,7 +193,8 @@ while true do
     sleep(0.1)
     term.clear()
     monitor.setCursorPos(1, 1)
-    print("Watching Items ")
+    term.setCursorPos(1, 1)
+    print("Watching Items ["..padLeft("█"*(updateCycle%20), 20, " ").."]")
 
     
     local entry = 0
@@ -221,11 +222,27 @@ while true do
         if specialItems[itemName] ~= nil then
             isSpecial = specialItems[itemName]
         end
+        if updateCycle%60<=20 then
+        printWithFormat(isSpecial ..
+            padLeft(itemName, max_ln, " ") ..
+            "&0 " ..
+            padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
+            "p/s" .. moreThanBefore)
+        end
+        if updateCycle%40<=40 and updateCycle%40>20 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
             padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
             "p/min" .. moreThanBefore)
+        end
+        if updateCycle%60>=40 then
+        printWithFormat(isSpecial ..
+            padLeft(itemName, max_ln, " ") ..
+            "&0 " ..
+            padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
+            "p/h" .. moreThanBefore)
+        end
         --printWithFormat(isSpecial ..
         --    padLeft("|--", 5, " ") ..
         --    "&0 " ..
@@ -236,11 +253,12 @@ while true do
         end
         print ""
     end
-    sleep(0.33)
+    sleep(0.25)
     --print("")
     --print()
 
     updateCycle = updateCycle + 1
+    
     if updateCycle % 10 == 9 then
         if toMonitor~=nil then
             local monitor = peripheral.wrap(toMonitor)
