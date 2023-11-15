@@ -231,7 +231,7 @@ while true do
             moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
-            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]) .. " ("..currentlyLeftInChestTable[itemName].."pcs left using "..perSecondSinceStart.." per second)"
+            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."pcs left using "..string.format("%.2f", perSecondSinceStart).." per second)"
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&0"
