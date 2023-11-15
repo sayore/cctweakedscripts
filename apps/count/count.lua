@@ -54,6 +54,7 @@ local monitor = term.current()
 if toMonitor~=nil then
     local monitor = peripheral.wrap(toMonitor)
     monitor.setTextScale(0.5)
+    term.redirect(monitor)
     print("Bound Monitor {"..(monitor and "a monitor" or "???").."}["..toMonitor.."]")
     sleep(1)
 end
@@ -222,21 +223,21 @@ while true do
         if specialItems[itemName] ~= nil then
             isSpecial = specialItems[itemName]
         end
-        if updateCycle%60<=20 then
+        if (updateCycle%60)<=20 and (updateCycle%40)<=0 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
             padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart), 7, " ") ..
             "p/s" .. moreThanBefore)
         end
-        if updateCycle%40<=40 and updateCycle%40>20 then
+        if (updateCycle%40)<=40 and (updateCycle%40)<20 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
             padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..
             "p/min" .. moreThanBefore)
         end
-        if updateCycle%60>=40 then
+        if (updateCycle%60)>=60 and (updateCycle%40)<40 then
         printWithFormat(isSpecial ..
             padLeft(itemName, max_ln, " ") ..
             "&0 " ..
