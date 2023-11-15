@@ -235,7 +235,9 @@ while true do
             moreThanAtStart = " (+ " .. movedSinceStartTable[itemName] .. " Pcs)"
         end
         if optionShowDepot==true and currentlyLeftInChestTable[itemName] ~= nil and currentlyLeftInChestTable[itemName] ~= 0 then
-            stocked = "Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps)"
+            if currentlyLeftInChestTable[itemName] ~= 0 and currentlyLeftInChestTable[itemName]~=nil then
+                stocked = " Stocked Time: ".. disp_time(currentlyLeftInChestTable[itemName]/perSecondSinceStart) .. " ("..currentlyLeftInChestTable[itemName].."p/"..string.format("%.2f", perSecondSinceStart).."ps) "
+            end
         end
         movedTableLastUpdate[itemName] = 0
         local isSpecial = "&0"
@@ -253,10 +255,10 @@ while true do
                     printWithFormat(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
-                        padLeft(amountMovedEver, 6, " ")..
-                        "p/s" .. moreThanBefore)
+                        padLeft(amountMovedEver, 6, " ").. " "
+                        .. moreThanBefore)
                     print ""
-                    printWithFormat(isSpecial .. "   " ..
+                    printWithFormat(padLeft("", max_ln, " ") ..
                         padLeft(string.format("%.2f", perSecondSinceStart), 7, " ").."p/s".. "   " ..
                         padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") .."p/min".. "   " ..
                         padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") .."p/h")
@@ -286,9 +288,11 @@ while true do
                 end
             end
             
-            if optionShowDepot==true then
+            if optionShowDepot==true and stocked~="" then
                 print ""
+                term.setBackgroundColor(colors.orange)
                 printWithFormat(stocked)
+                term.setBackgroundColor(colors.black)
             end
             printWithFormat("&0")
             print ""
