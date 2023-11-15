@@ -291,7 +291,6 @@ while true do
             if optionShowDepot==true and stocked~="" then
                 term.setBackgroundColor(colors.orange)
                 term.setTextColor(colors.white)
-                term.set(colors.orange)
                 print(stocked)
                 term.setBackgroundColor(colors.black)
                 term.setTextColor(colors.white)
