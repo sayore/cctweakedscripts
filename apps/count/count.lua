@@ -245,6 +245,7 @@ while true do
                 padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 3600), 7, " ") ..
                 "p/h" .. moreThanBefore)
             end
+            print ""
         end
         --printWithFormat(isSpecial ..
         --    padLeft("|--", 5, " ") ..
@@ -254,7 +255,7 @@ while true do
         if (max_ln < string.len(itemName)) then
             max_ln = string.len(itemName)
         end
-        print ""
+        
     end
     sleep(0.25)
     --print("")
