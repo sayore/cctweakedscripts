@@ -121,7 +121,8 @@ function writeAbs(filepath, handle, loud)
    return true;
 end
 
-function printWithFormat(...)
+function printWithFormat(a)
+   print(a)
    local s = "&1"
    for k, v in ipairs(arg) do
        s = s .. v
@@ -141,8 +142,8 @@ function printWithFormat(...)
    end
 end
 
-function printlnWithFormat(...)
-   printWithFormat(...)
+function printlnWithFormat(a)
+   printWithFormat(a)
    print(" ")
 end
 

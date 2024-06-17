@@ -1,5 +1,6 @@
 --# wget run http://cozycatcrew.de:1380/install.lua
 --# wget run http://localhost:1380/install.lua
+--# wget run http://lgbtcuties.duckdns.org:1380/install.lua
 --# wget run http://princess-sayore.ddns.net/install.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
 --local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
@@ -8,12 +9,12 @@ install = require("/eget/libs/installLib").install
 writeAbs = require("/eget/libs/helper").writeAbs
 download = require("/eget/libs/helper").download
 
-local repoURL = "http://cozycatcrew.de:1380"
-local wsURL =   "ws://cozycatcrew.de:1380"
+local repoURL = "http://lgbtcuties.duckdns.org:1380"
+local wsURL =   "ws://lgbtcuties.duckdns.org:1380"
 local args = { ... }
 term.clear()
 
-shell.run("wget run http://cozycatcrew.de:1380/install.lua")
+--shell.run("wget run http://lgbtcuties.duckdns.org:1380/install.lua")
 
 if args[1] == "help" then
     print("The following arguments can be passed")

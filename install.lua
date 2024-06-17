@@ -1,6 +1,6 @@
 -- Node will insert the libs here!
-local repoURL = "http://cozycatcrew.de:1380"
-local wsURL =   "ws://cozycatcrew.de:1380"
+local repoURL = "http://lgbtcuties.duckdns.org:1380"
+local wsURL =   "ws://lgbtcuties.duckdns.org:1380"
 local args = { ... }
 term.clear()
 writeAbs("/eget/libs/installLib.lua",
