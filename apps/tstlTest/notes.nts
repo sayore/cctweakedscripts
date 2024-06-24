@@ -1,0 +1,71 @@
+function setTimeout(callback: () => void, delay: number): void {
+  parallelTasks.push(function() {
+      const timerId = os.startTimer(delay);
+      while (true) {
+          const [event, id] = os.pullEvent("timer");
+          if (id === timerId) {
+              callback();
+              break;
+          }
+      }
+  });
+}
+
+function setInterval(callback: () => void, interval: number): void {
+  parallelTasks.push(function() {
+      while (true) {
+          const timerId = os.startTimer(interval);
+          while (true) {
+              const [event, id] = os.pullEvent("timer");
+              if (id === timerId) {
+                  callback();
+                  break;
+              }
+          }
+      }
+  });
+}
+
+const parallelTasks: (() => void)[] = [];
+
+function runMainProgram(): void {
+  parallelTasks.push(function() {
+      while (true) {
+          print("Main program running...");
+          const timerId = os.startTimer(1);
+          while (true) {
+              const [event, id] = os.pullEvent("timer");
+              if (id === timerId) {
+                  break;
+              }
+          }
+      }
+  });
+
+  // Use parallel.waitForAll to run all tasks concurrently
+  parallel.waitForAll(...parallelTasks);
+}
+
+// Example usage
+setTimeout(() => {
+  print("This will be printed after 2 seconds");
+}, 2);
+
+setInterval(() => {
+  print("This will be printed every 3 seconds");
+}, 3);
+
+setInterval(() => {
+  print("This will be printed every 4 seconds");
+}, 4);
+
+setInterval(() => {
+  print("This will be printed every 5 seconds");
+
+  setTimeout(() => {
+    print("This will be printed after 5 + 20 seconds"); 
+  }, 20); 
+}, 5);
+
+// Run the main program
+runMainProgram();

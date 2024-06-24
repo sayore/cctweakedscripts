@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
+  "compilerOptions": {
+    "types": ["@typescript-to-lua/language-extensions",
+    "@jackmacwindows/craftos-types",
+    "@jackmacwindows/cc-types"],
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    
+  },
+  "tstl": {
+    "luaTarget": "5.2",
+    "luaLibImport": "inline",
+    
+  }
+
+}

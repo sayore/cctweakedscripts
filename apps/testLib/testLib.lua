@@ -6,7 +6,7 @@ local function displayJSON(input)
   -- Print the JSON in a formatted way
   local indentLevel = 0
   local inString = false
-  local function printWithFormat(...)
+  local function printNonblank(...)
     local s = "&1"
     for k, v in ipairs(arg) do
       s = s .. v
@@ -28,20 +28,20 @@ local function displayJSON(input)
   for i = 1, #json do
     local c = json:sub(i, i)
     if c == "{" or c == "[" then
-      printWithFormat(c, "&2")
+      print(c, "&2")
       indentLevel = indentLevel + 1
     elseif c == "}" or c == "]" then
       indentLevel = indentLevel - 1
-      printWithFormat(string.rep("  ", indentLevel) .. c, "&2")
+      print(string.rep("  ", indentLevel) .. c, "&2")
     elseif c == "," then
-      printWithFormat(c .. string.rep("  ", indentLevel), "&2")
+      print(c .. string.rep("  ", indentLevel), "&2")
     elseif c == ":" then
-      printWithFormat(c .. " ", "&2")
+      print(c .. " ", "&2")
     elseif c == "\"" then
       inString = not inString
-      printWithFormat(c, "&3")
+      print(c, "&3")
     else
-      printWithFormat(c)
+      print(c)
     end
   end
   term.setTextColor(colors.white)
@@ -55,3 +55,7 @@ local exampleTable = {
   }
 }
 displayJSON(exampleTable)
+
+local function someFunction()
+  print("Hello, World!")
+end

@@ -1,0 +1,472 @@
+
+Raw arguments:
+1,live
+2,router
+3,-fa
+4,--inSides{bottom}
+5,--outSides{top:{create:experience_nugget},right:{*}}
+Parsed inSides:
+bottom
+Parsed outSides:
+top: {
+  create:experience_nugget
+}
+right: {
+  *
+}
+Checking side:,bottom,with size:,240
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+CORRECT create:experience_nugget transported to right (1 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,6
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+CORRECT minecraft:blue_dye transported to right (8 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+CORRECT create:experience_nugget transported to right (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,5
+CORRECT minecraft:blue_dye transported to right (5 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Item found in slot,2,:,createmoredrillheads:quartz_dusts,x,3
+CORRECT createmoredrillheads:quartz_dusts transported to right (0 items moved)
+Raw arguments:
+1,live
+2,router
+3,-fa
+4,--inSides{bottom}
+5,--outSides{top:{create:experience_nugget},right:{*}}
+Parsed inSides:
+bottom
+Parsed outSides:
+top: {
+  create:experience_nugget
+}
+right: {
+  *
+}
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+side:right
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Item found in slot,2,:,createmoredrillheads:quartz_dusts,x,3
+side:top
+side:right
+CORRECT createmoredrillheads:quartz_dusts transported to right (3 items moved)
+Item found in slot,3,:,create:experience_nugget,x,1
+side:top
+side:right
+CORRECT create:experience_nugget transported to right (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+side:right
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Item found in slot,2,:,create:experience_nugget,x,2
+side:top
+side:right
+CORRECT create:experience_nugget transported to right (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,3
+side:top
+side:right
+CORRECT minecraft:blue_dye transported to right (3 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+side:right
+CORRECT create:experience_nugget transported to right (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,9
+side:top
+side:right
+CORRECT minecraft:blue_dye transported to right (9 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+side:right
+CORRECT create:experience_nugget transported to right (1 items moved)
+Raw arguments:
+1,live
+2,router
+3,-fa
+4,--inSides{bottom}
+5,--outSides{top:{create:experience_nugget},right:{*}}
+Parsed inSides:
+bottom
+Parsed outSides:
+top: {
+  create:experience_nugget
+}
+right: {
+  *
+}
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Item found in slot,2,:,create:experience_nugget,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT create:experience_nugget transported to right (3 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT create:experience_nugget transported to right (1 items moved)
+Raw arguments:
+1,live
+2,router
+3,-fa
+4,--inSides{bottom}
+5,--outSides{top:{create:experience_nugget},right:{*}}
+Parsed inSides:
+bottom
+Parsed outSides:
+top: {
+  create:experience_nugget
+}
+right: {
+  *
+}
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,3
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (3 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,3
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (3 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,8
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (8 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Item found in slot,2,:,create:experience_nugget,x,3
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (3 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,7
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (7 items moved)
+Item found in slot,2,:,create:experience_nugget,x,2
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Item found in slot,3,:,createmoredrillheads:quartz_dusts,x,1
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT createmoredrillheads:quartz_dusts transported to right (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (5 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Item found in slot,2,:,create:experience_nugget,x,2
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,2
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (2 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,8
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (8 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,5
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (5 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,7
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (7 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,4
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (4 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)
+Item found in slot,2,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Scanned side:,bottom
+Raw arguments:
+1,live
+2,router
+3,-fa
+4,--inSides{bottom}
+5,--outSides{top:{create:experience_nugget},right:{*}}
+Parsed inSides:
+bottom
+Parsed outSides:
+top: {
+  create:experience_nugget
+}
+right: {
+  *
+}
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,create:experience_nugget,x,1
+side:top
+filterItem:create:experience_nugget
+CORRECT create:experience_nugget transported to top (1 items moved)
+Item found in slot,2,:,minecraft:blue_dye,x,2
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (2 items moved)
+Scanned side:,bottom
+Checking side:,bottom,with size:,240
+Item found in slot,1,:,minecraft:blue_dye,x,6
+side:top
+filterItem:create:experience_nugget
+side:right
+filterItem:*
+CORRECT minecraft:blue_dye transported to right (6 items moved)

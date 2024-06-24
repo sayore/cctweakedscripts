@@ -1,6 +1,7 @@
 --# wget run http://cozycatcrew.de:1380/install.lua
 --# wget run http://localhost:1380/install.lua
 --# wget run http://lgbtcuties.duckdns.org:1380/install.lua
+--# wget run http://5.56.195.51:1380/install.lua
 --# wget run http://princess-sayore.ddns.net/install.lua
 --# wget run https://raw.githubusercontent.com/sayore/cctweakedscripts/master/eget.lua
 --local repoURL = "https://raw.githubusercontent.com/sayore/cctweakedscripts/master"
@@ -8,11 +9,18 @@ json = require("/eget/libs/json")
 install = require("/eget/libs/installLib").install
 writeAbs = require("/eget/libs/helper").writeAbs
 download = require("/eget/libs/helper").download
+getRepo = require("/eget/libs/checkRepos").getRepo
+setAliasIfNotExist = require("/eget/libs/helper").setAliasIfNotExist
 
-local repoURL = "http://lgbtcuties.duckdns.org:1380"
-local wsURL =   "ws://lgbtcuties.duckdns.org:1380"
+
+local repoURL = ""
+local wsURL = ""
+
+-- get repoURL and wsURL from getRepos
+repoURL = getRepo().repoURL
+wsURL = getRepo().wsURL
+
 local args = { ... }
-term.clear()
 
 --shell.run("wget run http://lgbtcuties.duckdns.org:1380/install.lua")
 
@@ -23,6 +31,7 @@ if args[1] == "help" then
     print("  list  -- List all programs")
     print("  install  -- Install a Programm")
     print("  uninstall  -- Remove a Programm")
+    print("  addrepo  -- Add a repoURL")
     print("  live  -- Liverun/Restart on change")
 end
 
@@ -33,6 +42,7 @@ end
 
 if args[1] == "-i" or args[1] == "install" then
     install(repoURL, args[2])
+    
 end
 
 if args[1] == "-r" or args[1] == "run" then
@@ -40,9 +50,25 @@ if args[1] == "-r" or args[1] == "run" then
         install(repoURL,args[2])
     end
 
-    local path = "/apps/" .. args[2] .. "/" .. args[2]
-    print("Trying to run " .. path .. ".lua\n")
-    shell.run(path .. ".lua", table.concat(args, " "));
+    -- If script has a package.json and contains eget.main, run that
+    -- Otherwise run the script by it's default file name
+
+    if fs.exists("/apps/" .. args[2] .. "/package.json") then
+        local file = fs.open("/apps/" .. args[2] .. "/package.json", "r")
+        local fileContent = file.readAll()
+        file.close()
+        local jsonResult = json.decode(fileContent)
+
+        if (jsonResult['eget'] ~= nil) and (jsonResult['eget']['main'] ~= nil) then
+            local path = "/apps/" .. args[2] .. "/" .. jsonResult['eget']['main']
+            print("Running package.json main " .. path .. "\n")
+            shell.run(path, table.concat(args, " "));
+        end
+    else
+        local path = "/apps/" .. args[2] .. "/" .. args[2]
+        print("Trying to run " .. path .. ".lua\n")
+        shell.run(path .. ".lua", table.concat(args, " "));
+    end
 end
 
 if args[1] == "-u" or args[1] == "uninstall" then
@@ -60,6 +86,19 @@ local socketOpen=false;
 if args[1] == "live" then
     local coroutine_state = "none"
     local livepath = "apps/" .. args[2] .. "/" .. args[2] .. ".lua"
+    if fs.exists("/apps/" .. args[2] .. "/package.json") then
+        local file = fs.open("/apps/" .. args[2] .. "/package.json", "r")
+        local fileContent = file.readAll()
+        file.close()
+        local jsonResult = json.decode(fileContent)
+
+        if (jsonResult['eget'] ~= nil) and (jsonResult['eget']['main'] ~= nil) then
+            local path = "/apps/" .. args[2] .. "/" .. jsonResult['eget']['main']
+            print("Running package.json main " .. path .. "\n")
+            livepath=path;
+        end
+    end
+    
     function liveRoutineUntil()
         http.websocketAsync(wsURL, { app = args[2], method = "watch" })
 
@@ -105,8 +144,6 @@ if args[1] == "live" then
 
     end
 
-    
-
     function runLive()
         local id = shell.run("/" .. livepath, table.concat(args, " "))
         --multishell.setTitle(id, "LIVE")
@@ -116,6 +153,8 @@ if args[1] == "live" then
 
     if args[1] == "live" then
         while true do
+            --print("Checking for updates")
+            print(repoURL)
             install(repoURL, args[2])
 
             parallel.waitForAny(runLive, liveRoutineUntil)
@@ -160,3 +199,4 @@ if args[1] == "live" then
         end
     end
 end
+

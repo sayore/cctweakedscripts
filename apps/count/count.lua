@@ -10,6 +10,76 @@ local optionDetailed = false
 local debug=false
 local toMonitor = nil
 
+local colorsMap = {
+    ["0"] = colors.white,
+    ["1"] = colors.orange,
+    ["2"] = colors.magenta,
+    ["3"] = colors.lightBlue,
+    ["4"] = colors.yellow,
+    ["5"] = colors.lime,
+    ["6"] = colors.pink,
+    ["7"] = colors.gray,
+    ["8"] = colors.lightGray,
+    ["9"] = colors.cyan,
+    ["a"] = colors.purple,
+    ["b"] = colors.blue,
+    ["c"] = colors.brown,
+    ["d"] = colors.green,
+    ["e"] = colors.red,
+    ["f"] = colors.black,
+}
+
+function printColoredString(str)
+    local function setColor(colorCode, isBackground)
+        if isBackground then
+            term.setBackgroundColor(colorCode)
+        else
+            term.setTextColor(colorCode)
+        end
+    end
+
+    local function resetColors()
+        term.setTextColor(colors.white)
+        term.setBackgroundColor(colors.black)
+    end
+
+    local x, y = term.getCursorPos()
+    local i = 1
+    while i <= #str do
+        local char = str:sub(i, i)
+        if char == "&" then
+            local nextChar = str:sub(i+1, i+1)
+            if nextChar == "r" then
+                resetColors()
+                i = i + 2
+            elseif colorsMap[nextChar] then
+                setColor(colorsMap[nextChar], false)
+                i = i + 2
+            elseif #str >= i+2 and colorsMap[nextChar] and colorsMap[str:sub(i+2, i+2)] then
+                setColor(colorsMap[nextChar], false)
+                setColor(colorsMap[str:sub(i+2, i+2)], true)
+                i = i + 3
+            else
+                -- If the sequence is invalid, skip the '&' and continue
+                term.setCursorPos(x, y)
+                term.write(char)
+                x = x + 1
+                i = i + 1
+            end
+        else
+            term.setCursorPos(x, y)
+            term.write(char)
+            x = x + 1
+            i = i + 1
+        end
+    end
+end
+  
+  -- Example usage
+  term.clear()
+  term.setCursorPos(1, 7)
+  printColoredString("&0Hello &3World! This &02 is cool! &5Right? &rReset &3Colors")
+
 function startsWith(String, Start)
     return string.sub(String, 1, string.len(Start)) == Start
 end
@@ -75,8 +145,8 @@ if fs.exists("/apps/count/version") then
 end
 --print("Arguments: ",dump(args))
 --print("Terminal Redirect! (Build "..version..")")
-local monitor = peripheral.wrap(toMonitor)
-term.redirect(monitor)
+--local monitor = peripheral.wrap(toMonitor)
+--term.redirect(monitor)
 
 monitor.setBackgroundColor(colors.black)
 local movedTable = {}
@@ -140,30 +210,7 @@ local specialWords = {
     ["Nikolite"] = "&9"
 }
 
-function printWithFormat(...)
-    local s = "&1"
-    for k, v in ipairs(arg) do
-        s = s .. v
-    end
-    s = s .. "&0"
 
-    local fields = {}
-    local lastcolor, lastpos = "0", 0
-    for pos, clr in s:gmatch "()&(%x)" do
-        table.insert(fields, { s:sub(lastpos + 2, pos - 1), lastcolor })
-        lastcolor, lastpos = clr, pos
-    end
-
-    for i = 2, #fields do
-        term.setTextColor(2 ^ (tonumber(fields[i][2], 16)))
-        io.write(fields[i][1])
-    end
-end
-
-function printlnWithFormat(...)
-    printWithFormat(...)
-    print(" ")
-end
 
 
 function pairsByKeys (t, f)
@@ -261,33 +308,33 @@ while true do
         if movedSinceStartTable[itemName]~=nil and movedSinceStartTable[itemName] > 0.001 then
             if optionDetailed then
                 
-                printWithFormat(isSpecial ..
+                printColoredString(isSpecial ..
                     padLeft(itemName, max_ln, " ") ..
                     "&0 " ..
                     padLeft(amountMovedEver, 6, " ").. " "
                     .. moreThanBefore)
                 print ""
-                printWithFormat(padLeft("", max_ln, " ") ..
+                printColoredString(padLeft("", max_ln, " ") ..
                     padLeft(unit_format(perSecondSinceStart), 7, " ").."p/s".. " " ..
                     padLeft(unit_format(perSecondSinceStart * 60), 7, " ") .."p/min".. " " ..
                     padLeft(unit_format(perSecondSinceStart * 3600), 7, " ") .."p/h")
             else
                 if (updateCycle%60)<=20 and (updateCycle%40)>=0 then
-                    printWithFormat(isSpecial ..
+                    printColoredString(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
                         padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format(perSecondSinceStart), 7, " ") ..
                         "p/s" .. moreThanBefore)
                 end
                 if (updateCycle%60)<=40 and (updateCycle%60)>20 then
-                    printWithFormat(isSpecial ..
+                    printColoredString(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
                         padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format(perSecondSinceStart * 60), 7, " ") ..
                         "p/min" .. moreThanBefore)
                 end
                 if (updateCycle%60)<=60 and (updateCycle%60)>40 then
-                    printWithFormat(isSpecial ..
+                    printColoredString(isSpecial ..
                         padLeft(itemName, max_ln, " ") ..
                         "&0 " ..
                         padLeft(amountMovedEver, 6, " ") .. " " .. padLeft(unit_format( perSecondSinceStart * 3600), 7, " ") ..
@@ -303,10 +350,10 @@ while true do
                 term.setBackgroundColor(colors.black)
                 term.setTextColor(colors.white)
             end
-            printWithFormat("&0")
+            printColoredString("&0")
             print ""
         end
-        --printWithFormat(isSpecial ..
+        --printColoredString(isSpecial ..
         --    padLeft("|--", 5, " ") ..
         --    "&0 " ..
         --    padLeft("", 6, " ") .. " " .. padLeft(string.format("%.2f", perSecondSinceStart * 60), 7, " ") ..

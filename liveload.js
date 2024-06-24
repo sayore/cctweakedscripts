@@ -25,7 +25,7 @@ server.on('request', app);
 // One-liner for current directory
 
 function updateBuildVersionNumber(appname) {
-    var versionNumber= -1;
+    let versionNumber= -1;
     if(fs.existsSync('./apps/'+appname+"/version"))
     versionNumber = Number(fs.readFileSync('./apps/'+appname+"/version"))
     fs.writeFileSync('./apps/'+appname+"/version",(versionNumber+1).toString())
@@ -35,7 +35,7 @@ function updateBuildVersionNumber(appname) {
 async function updateEVN(){
     chokidar.watch('./eget.lua').on('change', (path) => {
         console.log('./eget.lua updated');
-        var versionNumber= -1;
+        let versionNumber= -1;
         if(fs.existsSync('./version'))
         versionNumber = Number(fs.readFileSync('./version'))
         fs.writeFileSync('./version',(versionNumber+1).toString())
@@ -43,7 +43,7 @@ async function updateEVN(){
 }
 
 updateEVN(); 
-var countWatchers = [];
+let countWatchers = [];
 
 // Creating connection using websocket
 wss.on("connection", (ws,req) => {
@@ -68,11 +68,12 @@ wss.on("connection", (ws,req) => {
         if(data == "exit") ws.close()
         try{
             if(typeof(data)=="object") data = data.toString()
-            var parsedData=JSON.parse(data)
+            let parsedData=JSON.parse(data)
             console.log("WS","Loose Data ",parsedData,"[ is "+typeof(data)+", is parsed to JSON ]");
         } catch {
             console.log("Loose Data",data," [ is "+typeof(data)+", could not be parsed to JSON ]");
-            var parsedData=data
+            let parsedData=data
+            if(!parsedData.type) return;
         }
         //Send for WebApp Register
         if(parsedData.type=="register") {

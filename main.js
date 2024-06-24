@@ -3,29 +3,76 @@ import express from 'express'
 let app = express()
 import path from 'node:path';
 import pug from 'pug';
+import fs from 'fs'
 import { fileURLToPath } from 'node:url';
+import bodyParser from 'body-parser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 console.log(__dirname)
 
+if (!fs.existsSync("./upload")) {
+    fs.mkdirSync("./upload");
+}
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.set('view engine', 'pug');
 
 app.get('*', (req, res, next) => {
-    console.log(req.url)
+    console.log(req.ip + ": " + req.url)
     next()
 })
+
+// Route to handle file append based on timestamp
+app.post('/upload/:scriptname', (req, res) => {
+    const scriptname = req.params.scriptname;
+    const filePath = path.join("./upload", `${scriptname}.txt`);
+    console.log(req.params)
+
+    // Append file content
+    fs.appendFile(filePath, req.body + '\n', err => {
+        if (err) {
+            console.error('Error appending to file:', err);
+            res.status(500).send('Error appending to file');
+        } else {
+            console.log('Data appended to file successfully:', filePath);
+            res.send('Data appended to file successfully');
+        }
+    });
+});
 
 app.get('/', (req, res) => {
     console.log(path.join(__dirname,"./static/index.pug"))
     res.render(path.join(__dirname,"./static/index.pug"))
 })
 
+app.get('/live', (req, res) => {
+    res.send(true)
+    res.end();
+})
+
 app.get('/api/getapps', async (req, res) => {
     let appList = readdirSync(path.join(__dirname,"./apps"))
 
     res.send(appList)
+    res.end()
+})
+
+app.get('/api/getappversion/:app', async (req, res) => {
+    //get app version
+    //check if app exists
+    //read version
+    let appVersion
+    if(!fs.existsSync(path.join(__dirname,"./apps/"+req.params.app))){
+        appVersion = fs.readFileSync(path.join(__dirname,"./apps/"+req.params.app+"/version"),{encoding:'utf-8'})
+    } else {
+        appVersion = -1
+    }
+    
+    res.send(appVersion)
     res.end()
 })
 
@@ -52,6 +99,47 @@ app.get('/install.lua', (req, res, next) => {
     res.send(addLineNumbers(toSend))
     res.end()
 })
+
+// Recursively find all files in a directory
+function findFiles(dir, baseDir = dir) {
+    let results = [];
+    let list = fs.readdirSync(dir);
+    list.forEach((file) => {
+        let fullPath = path.join(dir, file);
+        let relativePath = path.relative(baseDir, fullPath).split(path.sep).join('/');
+        try {
+            let stat = fs.lstatSync(fullPath);
+            if (stat.isDirectory()) {
+                results = results.concat(findFiles(fullPath, baseDir));
+            } else {
+                results.push(relativePath);
+            }
+        } catch (e) {
+            results.push(relativePath);
+        }
+    });
+    return results;
+}
+
+app.get('/dirAsList/*', (req, res) => {
+    // Create a list of files in the directory
+    // Guard against invalid paths, only make /apps/* requests, deny anything else
+    let pathParts = req.path.split('/');
+    pathParts.shift();
+    pathParts.shift();
+
+    if (pathParts[0] === 'apps') {
+        const targetDir = path.join(__dirname, './apps/', pathParts.slice(1).join('/'));
+        if (fs.existsSync(targetDir) && fs.lstatSync(targetDir).isDirectory()) {
+            let appList = findFiles(targetDir);
+            res.send(appList);
+        } else {
+            res.status(404).send("Directory not found");
+        }
+    } else {
+        res.status(400).send("Invalid path (" + pathParts + ")");
+    }
+});
 
 app.use('/apps', express.static('apps'))
 app.use('/libs', express.static('libs'))
